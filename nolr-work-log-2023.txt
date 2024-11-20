@@ -1,0 +1,3677 @@
+
+29 12 Freitag
+
+
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	x- Caching Problem gefunden während DSM war gelöst 
+		- GF Suche und Arbeitsvorrat zeigen gleiche Ergebnis
+		- Ergebnis verknüpft in beide Grids - das ist ein Fehler
+	- Fristablauf Filter Abfrage implementiert aber nicht mit Frist Eigenschaft 
+	weil das noch nicht in branch gemergt ist
+	
+Offene Fragen/Problemen:
+	1 - Grid nicht befüllt mit Daten wenn man zum ersten mal auf Seite kommt
+		- das kann so bleiben laut Alex
+	2 - Bearbeiter aus Beispiel von Alex
+		- Aufklärung: Label Text kommt aus GeschaeftsFall.ZustaendigerBearbeiter
+		und GeschaeftsFall.ZustaendigerBearbeiter können wir in LINQ-Genome
+		Abfrage nicht nutzen
+		-> wir haben keine Möglichkeit mit GeschaeftsFall.ZustaendigerBearbeiter
+		zu filtrieren
+
+EH US70578 Fehlende Unterlagen - Fristdatum als eigene Eigenschaft speichern und als Statusfilter im Arbeitsvorrat beachten
+	x- fertig, PR gemacht, wir brauchen CR
+	
+EH US70367 Umbau der Funktion Zuteilen bei default.aspx?show=GeschaeftsFall/EHGFZuteilenSwitch
+	- begann mit Arbeit
+	- "Zuteilen" Button Analyse (Menu Eintrag "Trennblat drucken", Tab "Zuteilenschalter")
+		- es scheint dieser Button macht noch immer Änderungen verknüpft mit LAKIS:
+			pageStrings.Add("gz_mz", GZKennzeichen.ToStringLakis());
+
+Offene Fragen/Problemen:
+		1 - soll ich diese anscheinend-LAKIS-verwandte "Zuteilen" Button Funktionalität entfernen?
+		2 - es gibt auch Button "Nicht Zuteilen", soll ich auch seine Funktionalität entfernen
+		oder anpassen um etwas mit "ZugeteiltAm" Datum zu machen?
+	
+	
+28 12 Donnerstag
+
+
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	x- implementierte Menü Einträgen
+	x- einige Verbesserungen und Korrekturen:
+		- verdoppelte Button Handler Aufruf korrigiert
+	x- versuchte Filter Bedingungen zu implementieren aber es gibt einige Fragen:
+		- Offenes Konzept - implementiert
+		- Fristablauf - Problem mit FehlendeUnterlagenDaten.GeschaeftsFallId
+			- ich kann nicht Wert holen wegen Genome Fehler
+			"OQL member call to member "noe.EH.Domain.IEHDomainObject.Id" cannot be translated..."
+			- das passiert wegen Eigenschaft EHFehlendeUnterlagenDaten.GeschaeftsFall.Id
+			- ohne diese Eigenschaft kann ich nicht GF und FehlendeUnterlagen 
+			verknüpfen um Frist  zu vergleichen
+		- Neues Eingangsstück - kann nicht implementieren
+
+Fragen/Problemen:
+	1 - Grid nicht befüllt mit Daten wenn man zum ersten mal auf Seite kommt
+	2 - was mit Geschäftsfälle die FehlendeUnterlagenDaten haben 
+	mit Frist "ehestens" 
+		2.1 - in Spalte FehlendeUnterlagenDaten.Text4 ist Frist gespeichert:
+			- wenn Frist ist DateTime.MinValue dann ist Wert in der Spalte "ehestens"
+			- wenn Frist ist "DateTime.Today + 60 Tage" dann ist Wert in der Spalte 
+			"bis spätestens <DateTime.Today + 60 Tage>"
+				- wollen wir Geschäftsfälle mit FehlendeUnterlagenDaten Zeilen 
+				mit "ehestens" in Ergebnis wenn Filter ist "Fristablauf"?
+		2.2 - EHFehlendeUnterlagenDaten.GeschaeftsFall.Id wirft eine Ausnahme
+	3 - Neues Eingangsstück - das kann ich momentan nicht implementieren 
+	(ZugeteiltAm wird in zukünftigen US implementiert)?
+
+
+27 12 Mittwoch
+
+
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	- Fragen aufgeklärt
+	- einige neue Fragen in F2 für Alex angelegt
+	- weitere Entwicklung:
+		- "Filter Zurücksetzen" Button implementiert
+		- vorgesetzte Wert für Mitarbeiter - Umsetzung korrigiert
+		- begann Menü Einträge einzubauen
+			- Problem: sie sind eingebaut aber nicht gezeigt
+		- neue Kontrolle als Einstiegsseite eingebaut
+
+
+22 12 Freitag
+
+
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	- weiter gemacht
+		- Abfrage Entwicklung
+		- Problemen:
+			- Bearbeiter ID für GF holen
+
+ 
+21 12 Donnerstag
+
+
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	- weiter gemacht
+		- UI war fertig
+		- Abfrage Entwicklung habe ich begonnen gestern
+
+
+20 12 Mittwoch
+
+
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	- weiter gemacht
+		- Fragen geantwortet
+		- Kontrollen erstellt, Inhalt hinzugefügt und angepasst
+	- heute mache ich weiter
+	
+	
+19 12 Dienstag
+
+
+MH BUG70067 Administration, Förderungswerber, Adresse Felder Stiege und Tür fehlen
+	- Text "Tür" korrigiert 
+	x- abgeschlossen
+
+WZ BUG70368 SAP Buttons Sichtbarkeit spät
+	- Dominik Analyse:
+		- vielleicht wenn es BPK oder Konto Inhaber fehlt ist Button versteckt
+		- und dann werden sie eingegeben und dann noch immer nicht sichtbar
+	x- Analyse: wenn Konto Inhaber fehlt "Mit Buchhaltung verknüpfen" Button ist versteckt
+FRAGE:	
+	- warten wir auf Antwort von Fachabteilung?
+
+WZ BUG70369 Fehlerhafte Unterschiedsmeldung
+	- es scheint leere strings konnten in WZ als IBANs gespeichert werden
+		- korrigiert in Vergleich
+	x- ich prüfte ob gleiche Situation besteht in IP und EH (ähnlicher Code):
+		- IP - speichert leere strings nicht als IBANs
+		- EH - nicht zugelassen leeren IBAN zu speichern
+	x- abgeschlossen
+
+WZ BUG70370 Laufzeitfehler
+	- nicht wiederholbar, abgeschlossen
+	
+EH US70365 Neue Arbeitsvorrat Seite mit Filterfunktionen und Buttons
+	- begann mit Arbeit
+		- kopierte Kontrolle
+		- begann mit Anpassungen
+	- einige Fragen in F2
+
+
+18 12 Montag
+
+
+- kürzer gearbeitet
+
+WZ US69945 COO Adresse des Antrags an SAMW/Buchtrans mit übergeben
+	- abgeschlossen
+	
+MH US70119 COO Adresse der Geschäftsfall Ordnungsnummer bei Buchtrans mit übergeben
+	- Code Review mit Tom Bernhard Michael
+		- Frage für Alex und weitere Frage für Fachabteilung
+	- wir sagten momentan ist nicht klar wie die Business Logik funktionieren sollte 
+	und Fachabteilung hat kein Zeit für Aufklärung
+
+MH BUG70067 Administration, Förderungswerber, Adresse Felder Stiege und Tür fehlen
+	- fertig gemacht
+	- Verbesserungen gepusht
+	- wir können abschließen
+	
+
+15 12 Freitag
+
+
+EH US69942 COO Adresse der Antrags Ordnungsnummer bei Buchtrans mit übergeben
+	x- US war abgeschlossen und PR merged
+
+IP US69944 COO Adresse der Ordnungsnummer an Buchtrans/SAMW mit übergeben
+	x- neuer PR war merged hier
+		- US war schon längst abgeschlossen
+
+WZ US69945 COO Adresse des Antrags an SAMW/Buchtrans mit übergeben
+	x- CR mit Tom Bernhard Michael
+	x- Verbesserungen
+	x- noch ein Genehmigung fehlt (Bernhard hat gegeben, wir brauchen noch jemand)
+	
+MH US70119 COO Adresse der Geschäftsfall Ordnungsnummer bei Buchtrans mit übergeben
+	- Umsetzungsvorschlag besteht und PR, wir müssen reviewen, es gibt Fragen in 
+	PR Kommentaren
+	
+14 12 Donnerstag
+
+
+
+EH US69942 COO Adresse der Antrags Ordnungsnummer bei Buchtrans mit übergeben
+	x- CR mit Tom Bernhard Michael
+	x- Verbesserungen gemacht
+		- Abholmethode-Fehler gefunden und Korrekturen von Tom vorgeschlagen und gepusht
+		- CamelCase überprüft
+	x- noch ein Genehmigung fehlt (Tom bitte, Michael hat gegeben)
+	
+WZ US69945 COO Adresse des Antrags an SAMW/Buchtrans mit übergeben
+	x- Umsetzung und PR gemacht 
+	x- CR bitte
+
+IP US69944 COO Adresse der Ordnungsnummer an Buchtrans/SAMW mit übergeben 
+	x- unter schon abgeschlossenen US habe ich neuen PR erstellt und Fixes eingebaut
+		- konditionelle Ausführung von "Coo-Adresse" Abholmethode war eingebaut 
+		(aber nicht wenn Vergleich durchgeführt ist)
+		- CamelCase in Methode Name geändert 
+	x- neuer PR ist bereit für CR
+
+
+13 12 Mittwoch
+
+
+EH US69942 COO Adresse der Antrags Ordnungsnummer bei Buchtrans mit übergeben
+	- bereit für CR
+
+WZ US69945 COO Adresse des Antrags an SAMW/Buchtrans mit übergeben
+	- machte ich aber habe Fragen
+
+
+12 12 Dienstag
+
+
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	- mit Tom reviewed, verbessert, abgeschlossen
+
+IP US69944 COO Adresse der Ordnungsnummer an Buchtrans/SAMW mit übergeben
+	- auch mit Tom reviewed und abgeschlossen
+	
+WZ BUG69806 Anzeige Unterschied IBAN Adresse
+	- mit Tom und Dominik abgeschlossen
+	
+EH US69942 COO Adresse der Antrags Ordnungsnummer bei Buchtrans mit übergeben
+	- fertig
+	- PR braucht CR
+	
+	
+11 12 Montag
+
+
+IP US69944 COO Adresse der Ordnungsnummer an Buchtrans/SAMW mit übergeben
+	- Umsetzung und PR gemacht
+		- scheint zu funktionieren
+	- wenn OK dann kann ich so auch in WZ und EH machen
+
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	- PR gemacht
+		- nach PR Code Review von Tom machte ich Verbesserungen 
+		und gepusht
+		- wir können wieder reviewen
+
+WZ BUG69806 Anzeige Unterschied IBAN Adresse
+	- ich hatte kein Zeit für dieses Bug am Montag, 
+	aber begann heute ( feature/BUG69806-Anzeige-Unterschied-IBAN-Adresse_2 ) 
+
+- sry weil ich gestern nicht auf SAP Refinement war,
+eine Mittags-Erledigung hat sich unerwartet verlängert	
+	
+	
+08 12 Freitag
+
+- kürzer gearbeitet
+
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	- machte einige Umsetzungsvorschlag aber war nicht sicher wie konnte ich testen
+	- ich werde PR machen und Bescheid geben, dann
+	können wir den PR anschauen und Funktionalität testen
+
+
+07 12 Donnerstag
+
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	- branch gemacht
+	- in brSave_Click event handler ich versuchte die Funktionalität zu erweitern damit das "Adressen (und Personen) speichern" Button Klick macht weitere Aktion:
+	x- wenn HauptAntrgasteller Hackehen entfernt habe ich zusätzlich eingebaut:
+		x- wenn GF Sitzungsreif (Datum besteht)
+			- dann Sitzungsreif aufheben (und Datum auf null setzen)
+		- wenn GF in Status Vorfixiert 
+			- Checkbox "disablen"
+			- Sitzungsreif nicht setzen
+		- wenn GF in Status Fixiert 
+			- Anweisungsstopp setzen
+			- Sitzungsreif nicht setzen
+
+TODO
+	- versuche mit dem Test wie soll es funktionieren und angepasst werden
+
+WZ BUG69806 Anzeige Unterschied IBAN Adresse
+	- begann
+	- neue branch aus main gemacht 
+	(mit anderen Namen damit wir Problemen mit schon gemergten branches vermeiden)
+
+TODO 
+	- wir setzen mit dem Test weiter morgen (SAMSTAG)
+
+06 12 Mittwoch 
+
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+
+	- begann mit Punkten UMsetzung0oll ich diese Prüfung (und Aufheben von Sitzungsreife wenn Pruefung passt) in gleiche Stelle machen wo Zurücksetzen passiert wenn man "Haupt Antragsteler" Häkchen entfernt? 
+		(Das ist in brSave_Click von PersonTab.ascx.cs  -  https://tfs01.noel.gv.at/DefaultCollection/_git/IP/pullrequest/11106?_a=files)
+
+IP - "unterschiedliche Verbesserungen wie in EH"
+	x- PR abgeschlossen und merged
+
+IP BUG69663 SAMW Rücksprung auf ausgelösten Tab wie in EH
+	- fertig gemacht
+	x- CR nötig
+	
+IP BUG69664 SAP Statusänderung manuell nicht möglich
+	- fertig gemacht
+	x- CR nötig
+	
+EH BUG69648 Sitzungsreife - alle Prüfmeldungen/Gründe auf einmal anzeigen
+	- begann mit Umsetzung
+		- FRAGE: ist ValidierungsCollector gute Lösung?
+
+05 12 Dienstag
+
+- ICH MUS REKONSTRUKTURIEREN AUS GIT COMMITs UND MELDUNGEN
+
+04 12 Montag
+
+- ICH MUS REKONSTRUKTURIEREN AUS GIT COMMITs UND MELDUNGEN
+
+01 12 Freitag
+
+- ICH MUS REKONSTRUKTURIEREN AUS GIT COMMITs UND MELDUNGEN
+
+30 11 Donnerstag
+
+- ICH MUS REKONSTRUKTURIEREN AUS GIT COMMITs UND MELDUNGEN
+
+29 11 Mittwoch
+
+- einige CR
+
+EH BUG69597 SAP Unterschiedsmeldung anpassen
+	- CR mit Bernhard Tom Michael
+	- Verbesserungen gepusht
+	x- abgeschlossen
+
+EH BUG69641 Sitzungsreife setzen nicht möglich aufgrund SAP ID? Ist aber vorhanden.
+	- Umsetzung und PR gemacht
+	- noch ein Genehmigung nötig
+	x- bald abgeschlossen
+	
+- IP 
+	x- unterschiedliche Verbesserungen wie in EH gepusht
+		- in IP mit EnumManager -> EnumHelper nutzen wenn möglich
+		- "Meldungen" Property
+		- Klasse Name ... -> BuchTrans
+	x- noch ein Genehmigung nötig
+	
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	x- begann aber Fragen bestehen
+
+IP BUG69663 SAMW Rücksprung auf ausgelösten Tab wie in EH
+	x- begann mit Arbeit
+
+
+28 11 Dienstag
+
+x - nach CR mit Bernhard Tom Michael haben wir
+
+IP US69440 Handling mit CPD Geschäftspartner ID
+	- abgeschlossen
+
+EH BUG69639 SAP Unterschiedsmeldung kommt doppelt
+	- reviewed und abgeschlossen
+
+EH BUG69597 SAP Unterschiedsmeldung anpassen
+	- begann
+	- TODO: 
+		1 - Frage soll ich GetText Methode durch EnumManager ersetzen 
+		(wie in EH implementiert)?
+		2 - möglicher Bug in F2 beschrieben, ist das Bug?
+		MHRZ - mit DisplayInfo besser, in IP mit EnumManager
+			-> EnumHelper nutzen wenn möglich
+	- neue Bug beheben - lassen wie es ist
+		
+EH BUG69641 Sitzungsreife setzen nicht möglich aufgrund SAP ID? Ist aber vorhanden.
+	- begann
+
+
+27 11 Montag
+
+IP BUG69146 SAP Unterschiedsmeldung leere Felder
+	- getestet und verbessert
+	x- CR mit Bernhard Tom Michael
+	x	- Verbesserungen
+	x- abgeschlossen 
+
+IP US69440 Handling mit CPD Geschäftspartner ID
+	x- Änderungen mit Unterstützung von Tom und Bernhard
+		- wie kann ich Konto Inhaber in Sitzungsreife Validator holen damit
+		ich überprüfe ob SAP GP CPD ist?
+	x- bereit für CR, nicht sicher ob ganze Funktionalität jetzt korrekt ist,
+	konnte nicht Zahlunsgrund 5 testen
+
+EH BUG69638 SAP Unterschiedsmeldung, IBAN's sind vertauscht
+	- konnte nicht wiederholen
+
+EH BUG69639 SAP Unterschiedsmeldung kommt doppelt
+	- begann mit Arbeit
+
+24 11 Freitag
+
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	x- abgeschlossen und merged
+
+IP BUG69146 SAP Unterschiedsmeldung leere Felder
+	x	- CR mit Bernhard und Michael
+	x	- ich pushte Verbesserungen aber konnte nicht testen weil BuchTRans funktionierte 
+	nicht
+		- TODO:
+			- Test
+			- CR
+	
+IP US69440 Handling mit CPD Geschäftspartner ID
+	- begann mit Umsetzung
+		- Fragen und TODO:
+			- soll ich in Sitzungsreife Validator Pruefungen machen:
+				- wenn CPD ID dann sind Konto und Kontoinhaber erforderlich fur Sitzungsreife?
+					- ist das gleicher Validator wo ich Konto Überprüfung entfernte?
+				- wenn nicht CPD ID dann ist HauptAntragsteller erforderlich fur Sitzungsreife?
+
+23 11 Donnerstag
+
+IP BUG69368 Protokollierung 1. Person als Hauptantragsteller setzen
+	x- abgeschlossen und merged
+	
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	x- fertig gemacht
+	x	- CR nötig
+
+IP BUG69146 SAP Unterschiedsmeldung leere Felder
+	X- Umsetzung gemacht wie beschrieben in Bug Kommentar
+	x	- CR nötig
+	
+IP US69440 Handling mit CPD Geschäftspartner ID
+	- begann mit Arbeit
+	- Fragen in F2 Channel gestellt
+
+	
+22 11 Mittwoch
+
+IP BUG69281 Hauptantragsteller ermitteln wie bei EH im Geschäftsfall
+	x- abgeschlossen und merged
+	
+IP BUG69071 Bankverbindung vor Zuschussanforderung (erste Anweisung
+	- Verbesserungen eingebaut
+	- CR 
+	x- abgeschlossen und merged
+	
+IP BUG69368 Protokollierung 1. Person als Hauptantragsteller setzen
+	- CR nötig
+	
+IP BUG69439 Hauptantragsteller Flag entfernen, Zurücksetzen der GP Verknüpfung
+	- Umsetzung fast fertig, ausgenommen eine Fehler mit Refresh
+	
+	
+21 11 Dienstag
+
+IP BUG69281 Hauptantragsteller ermitteln wie bei EH im Geschäftsfall
+	x- CR mit Bernhard Tom Michael
+	x	- Verbesserungen gepusht
+	x- noch ein Genehmigung nötig
+
+IP BUG69071 Bankverbindung vor Zuschussanforderung (erste Anweisung
+	x- CR von Alex
+	x	- Verbesserungen
+	x- vielleicht funktioniert Buttons "Sitzungsreife setzen" und "Endabrechnung erstellen"
+	jetzt wie erwartet
+	x	- frage ob VorFixierenValidator löschen
+	
+FX3 US65557 Bewilligung bzw. Sitzungsreife unterbinden, wenn keine GP ID vorhanden ist
+	- eine Frage über Konfiguration in F2 Channel
+
+20 11 Montag
+
+IP BUG68934 SAP ID zurücksetzten
+	- CR mit Bernhard Tom Michael
+		x- Verbesserungen gepusht
+	x- Bug abgeschlossen und gemerged
+
+IP BUG69281 Hauptantragsteller ermitteln wie bei EH im Geschäftsfall
+	x- Umsetzung gemach und getestet
+	- CR machen
+
+IP BUG69071 Bankverbindung vor Zuschussanforderung (erste Anweisung
+	- begann mit Arbeit aber es gibt Fragen
+
+- TODO: 
+	- frage Alex während DSM: 
+	Zuschusskonto-Validator von Button "Sitzungsreife setzen" löschen 
+	und für Button "Endabrechnung erstellen" einbauen?
+	
+17 11 Freitag
+
+x - mit Tom und Michael nach CR abgeschlossen:
+	FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	IP BUG69151 SAP Buttons anzeigen
+	IP BUG69146 SAP Unterschiedsmeldung leere Felder
+
+IP BUG68934 SAP ID zurücksetzten
+	x- Umsetzung fertig gemacht
+		- Problem mit null ref. Ausnhame gelöst
+		- PR gemacht
+	- szenarios getestet:
+		1 - sap session id besteht fuer sap-gp organuzation, "mit buchhaltung v." klick 
+			-> fehler meldung gezeigt
+		2 - sap session id null, "mit buchhaltung v." klick 
+			-> redirect auf samw
+		3 - sap gp id fuer organization gesetzt lokal
+			-> 
+	x- wir müssen besprechen ob das funktioniert wie erwartet
+
+16 11 Donnerstag
+
+IP BUG69151 SAP Buttons anzeigen
+	x- CR mit Tom
+	x	- eine Anmerkung eingebaut (Extension Methode statt Basisklasse)
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- Frage geklärt mit Florian
+	x	- Verbesserung eingebaut und Aenderung review mit Tom
+	x- ich warte auf zweiten Genehmigung
+
+IP BUG69146 SAP Unterschiedsmeldung leere Felder
+	x- Text geändert
+	x	- wir können den letzten commit anschauen
+
+IP BUG68934 SAP ID zurücksetzten
+	- weiter gemacht
+
+15 11 Mittwoch
+
+IP BUG68934 SAP ID zurücksetzten
+	- begann mit Umsetzung
+	
+IP BUG69146 SAP Unterschiedsmeldung leere Felder
+	- mögliche Umsetzung fertig
+	x	- Frage besteht in F2 Channel
+	
+IP BUG69151 SAP Buttons anzeigen
+	- Umsetzung fertig gemacht	
+	x	- wir brauchen CR
+
+14 11 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- Bildungsträger specflow fertig gemacht
+		- CR mit Tom
+	x	- es gibt eine Frage für Florian in PR
+
+FX3 BUG69151 SAP Buttons anzeigen
+	- begann mit Umsetzung
+
+13 11 Montag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- Bildungsträger - Buttons und Validator Umsetzung fertig
+		- Problemen mit Aufrufen von BuchTrans Methode readAccountingPersonAsync
+			- wegen YML Pipeline
+	x- Buttons und Validator getestet
+	x- PR erstellt und push gemacht
+	- begann mit specflow Test, wenn Test fertig ist können wir CR machen
+
+FRAGE
+	- specflow für Bildungsträger
+		1 - 
+
+TODO
+	- Grammatik in specflow Tests für (eine, ein):
+		- Errichter-Rechtsträger
+		- Bildungsträger
+	
+10 11 Freitag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- CR mit Bernhard und Michael
+		- Verbesserungen gepusht
+	x- nach Verbesserungen PR abgeschlossen
+		- Build Problem mit Job
+		- geloest (ein Test war fehlgeschlagen)
+	x- begann mit Bildungsträger
+	
+09 11 Donnerstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- specflow Tests mit Beispiele für Errichter-Typen fertig
+	- CR mit Bernhard
+	- alle Verbesserungen gepusht, bereit für CR
+		- merge Konflikt gelöst 
+	
+NAECHST:
+- Errichter 
+	- merge
+- Bildungsträger 
+	- https://tfs01.noel.gv.at/DefaultCollection/FX/_sprints/backlog/FX%20Team/FX/130?workitem=66878	
+
+08 11 Mittwoch
+	
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- specflow Test für Gemeinde fertig gemacht
+		- ein kleineren Refactoring von Bernhard habe ich weiter implementiert
+	- CR mit Bernhard, Tom, Michael
+	- "Beispiele" specflow Tests
+	
+07 11 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- Errichter-Rechtsträger
+		- unterschiedliche Korrekturen
+			- BPK aus Privatperson entfernt
+		- Tests durchgeführt:
+			- Tests ok:
+				- Bund
+				- Land
+				- Evangelische Religionsgemeinschaft
+			- Tests nicht gemacht: 
+				- Betrieb
+				- Katholische Religionsgemeinschaft
+			- Tests nicht ok:
+				- sonstiger Erhalter
+					- scheint OK - aber FBN ist nicht erkannt
+	- Bernhard machte CR und ich machte kleinere Verbesserungen, 
+	größere werde ich machen nach dem Termin mit Bernhard
+	- begann mit specflow Tests
+	
+DSM:
+- Errichter-Rechtsträger
+	- bereit für CR
+	- Problemen mit specflow Tests - es scheint mehrere 
+	Problemen erschienen mit schon implementierten Tests als ich
+	Refactoring Basisklassen mit IAntragsteller machte
+
+06 11 Montag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- Errichter-Rechtsträger
+		- viele Anpassungen für unterschiedliche Typen von Errichter gemacht
+		(Typ kann unterschiedliche juristische Personen sein oder Privatperson)
+	x	- lokal Test von Errichter-Typen Validators und Buttons:
+			- Tests (Validators und Buttons) ok:
+				- Gemeinde
+				- Privatperson
+				- Verein
+
+03 11 Freitag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- Errichter-Rechtsträger
+	x	- weiter gemacht mit SAP-Validators bzw. SAP-Vergleich und andere Anpassungen
+			- ich musste auch die bestehende Umsetzung von anderen Typen anpassen
+		- Adresse Übereinstimmung während Update habe ich eingebaut
+			- getestet und funktioniert
+	x- alle Änderungen getestet
+	x- Umsetzung funktioniert wenn Errichter-Rechtsträger eine "SAP-Physical-Person" ist
+	x- heute mache ich:
+TODO:
+	- Unterstützung für "SAP-Organisation"
+	- specflow Tests
+		
+02 11 Donnerstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- Errichter-Rechtsträger
+		- fortgesetzt mit Implementierung
+			- Refactoring und Anpassungen an bestehenden SAP Antragsteller Typen
+				- damit der Errichter-Rechtsträger auch von bestehenden Klassen behandelt ist
+		- Umsetzung für Buttons war gemacht und getestet
+			- es besteht offene Frage
+		- nächst ist SAP-Vergleich
+	- Tagesmutter
+		- merge Konflikt korrigiert, Michael testete am QA, wir brauchen Genehmigungen
+
+FX3 - SAP 
+	- Errichter-Rechtsträger
+		- weitere Umsetzung
+			- bestehende Funktionalität angepasst
+		- Buttons getestet
+		- begann zu arbeiten am SAP-Unterschied Funktionalität
+	- Tagesmutter
+		- Michael testete am QA, wir brauchen Genehmigungen
+
+01 11 Mittwoch
+- Alle Heilige
+
+31 10 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- Tagesmutter 
+		- noch ein commit mit Datei Umbenennungen und neuen Ordner
+	- begann mit "Rechtsträger/Errichter" Umsetzung
+		- Problemen: 
+			1 - TBerrichterRechtstraeger implementiert nicht IAntragsteller interface
+				- Lösungen:
+					1.A - SAP Eigenschaften in eigene interface ziehen
+					1.B - TBerrichterRechtstraeger soll IAntragsteller implementieren 
+						(nicht sauber - wir brauchen nur SPA Eigenschaften, nicht alle 
+						andere Eigenschaften aus IAntragsteller)
+			2 - ITBErrichterRechtstraegerContext implementiert nicht IAntragstellerContext interface
+				(IAntragstellerContext enthält Eigenschaft AntragstellerDtoHolder)
+
+30 10 Montag
+
+- bisschen kürzer gearbeitet
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- CR mit Bernhard und Michael
+	x- Verbesserungen gepusht
+	- Tests für BPK angepasst
+	x	- bereit für CR
+	- begann mit "Rechtsträger/Errichter" bis wir Tagesmutter-PR abschließen
+	
+27 10 Freitag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- CR mit Bernhard und Michael
+	- Verbesserungen gepusht
+
+- nächst: "Rechtsträger/Errichter"
+
+26 10 Donnerstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- specflow Tests und Anpassungen gepusht
+		- ich machte einige Fragen in PR Kommentare
+	x- branch bereit für CR
+
+25 10 Mittwoch
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- fehlgeschlagene specflow Tests erforscht und Fehler behoben
+		- unerwartete Zustand in Daten
+		- erforscht und debuggiert woher kommen die unerwartete Daten
+	- specflow Tests für Tagesmutter funktionieren jetzt
+
+24 10 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- Tagesmutter Umsetzung fertig gemacht
+	- getestet (Buttons, SAP Vergleich, Adresse Übereinstimmung)
+	- specflow Tests erstellt
+		- noch 4 von 10 Tests funktionieren nicht
+TODO: 
+- was mit Tagesmutter BPK
+- Refactoring
+			
+23 10 Montag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	x- JP PR 
+		- weiter gemacht mit Tom, Bernhard, Michael
+		- Verbesserungen gemacht
+	x	- PR abgeschlossen
+	x- Tagesmutter, Umsetzung fortgesetzt
+		- SAP Vergleich
+		- Adresse Übereinstimmung
+			
+TODO:
+- brauchen wir neue Klassen für Tagesmutter oder nutzen wir Person (Tagesmutter erbt von Person):
+	- SAP Vergleich
+	- Adresse Übereinstimmung 
+	- specflow Test
+
+20 10 Freitag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- CR mit Tom, Bernhard, Michael
+	- alle Verbesserungen gepusht
+	- mit Tagesmutter Umsetzung fortgesetzt
+	
+19 10 Donnerstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- neue branch aus develop gemacht, Implementierung war dann dort umgestellt
+		- merge Konflikt gelöst
+	- kleine Verbesserungen
+	- PR erstellt
+	- JP Funktionalität getestet:
+		- Specflow Tests OK
+		- SAP Buttons OK
+		- Unterschied-Vergleich OK
+			- nicht aktualisiert wenn man speichert - behoben
+		- Adresse Übereinstimmung OK
+	x- Bernhard machte JP CR
+	x	- ich machte die Verbesserungen
+	heute
+	x- mit Tagesmutter fortgesetzt ( feature/US66878-Tagesmutter )	
+
+- VS Update
+	
+18 10 Mittwoch
+
+- Besprechung mit Alex und Dominik (über MHRZ, und FX3)
+
+EH BUG68538 Absturz im Testsystem, Fall 1010200
+	- korrigiert, Fix gepusht
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- Implementierung fertig gemacht
+	- specflow Tests implementiert
+	- PR erstellt
+		- wir können reviewen
+	- TODO:
+		- Unterschied Meldung testen
+		- Adresse ID testen	
+
+17 10 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- UI weiter angepasst und Buttons und Funktionalität hinter den Buttons getestet
+	- Problem mit applicationhost.config aus AppData\Temp\ gelöst 
+	("Template" Datei für applicationhost.config aus globalen IISExpress Ordner angepasst)
+	- weitere Refactoring und Implementierung
+	
+16 10 Montag
+
+- EH und WZ 
+	- CRs mit Tom und Michael
+
+EH BUG67770 Anzeige des Unterschiedes in allen Reitern
+EH BUG67771 Automatische Aktualisierung GP Unterschied EH/SAMW
+	- CR von letzten Änderungen mit Tom und Michael
+	- abgeschlossen
+
+WZ BUG68373 Anweisung, Zahlungsgrund1 muss Daten des Kontoinhabers enthalten
+WZ BUG68254 SAP - Sicherstellen, dass im Zahlungsgrund1 der ausgewählte Kontoinhaber reingeschrieben wird
+	- CR von letzten Änderungen mit Tom und Michael
+	- abgeschlossen
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- mit Juristischer Person weiter gemacht
+		- *Prozess Klassen angepasst, weitere Klassen hinzugefügt
+		- kleine Test Verbesserungen
+		- Refactoring
+	- das kann ich heute weiter machen
+
+13 10 Freitag
+
+- WZ und IP Bugs 
+- mit Tom Code Review gemacht
+- mit Unterstützung von Tom Verbesserungen
+- jetzt sind die Änderungen gepusht und PRs sind für CR von letzten bereit
+
+EH BUG67770 Anzeige des Unterschiedes in allen Reitern
+EH BUG67771 Automatische Aktualisierung GP Unterschied EH/SAMW
+	x- Code Review von Tom und Verbesserungen 
+		- SessionSerice eingebaut statt HttpContext
+		- Refactoring in Basisklasse, Code vermindert 
+	x- bereit für CR
+
+WZ BUG68373 Anweisung, Zahlungsgrund1 muss Daten des Kontoinhabers enthalten
+WZ BUG68254 SAP - Sicherstellen, dass im Zahlungsgrund1 der ausgewählte Kontoinhaber reingeschrieben wird
+	x- Code Review und Unterstützung von Tom und Verbesserungen
+	x- bereit für CR
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- mit Juristischer Person weiter gemacht
+
+- gemergte remote branches habe ich gelöscht
+	- in FX3, WZ, IP, EH
+
+12 10 Donnerstag
+
+FX3 BUG67733 SAP GP Gemeinde ändern falsche COO Adresse
+	- mit Hilfe von Tom fertig gemacht
+	- abgeschlossen
+	x- falsche COO Adresse abgeschlossen
+	
+WZ BUG68373 Anweisung, Zahlungsgrund1 muss Daten des Kontoinhabers enthalten
+	x- Zahlungsgrund1 fertig, wartet auf CR
+
+EH BUG67770 Anzeige des Unterschiedes in allen Reitern
+	x- "Anzeige des Unterschiedes Bug" fertig, bereit für CR
+	
+EH BUG67771 Automatische Aktualisierung GP Unterschied EH/SAMW
+	- gelöst in PR für Unterschied Meldung branch (BUG67770)
+
+11 10 Mittwoch
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+WZ BUG67759 Aktualisierung des Kontoinhabers im Dropdown-Menü
+	x- wir machten Review mit Bernhard Tom Michael
+	x- Verbesserungen
+	- WZ am CI getestet
+	x- PR und ein Paar Bugs waren abgeschlossen
+
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+IP BUG67761 Automatische Aktualisierung GP Unterschied IP/SAMW
+	- zwei Bugs in einem PR abgeschlossen
+	- IP am CI getestet
+	x- Bugs und PR abgeschlossen
+	
+IP BUG68346 Haupt-Antragsteller Prüfung in Abfrage implementiert
+	- neuen Bug hinzugefügt
+	- Fix wie vorgeschlagen von Tom war implementiert
+		- ich habe die Situation bisschen weiter erforscht
+	- merged
+	
+FX3 BUG67733 SAP GP Gemeinde ändern falsche COO Adresse 
+	- ich testete und kann bestätigen - Fehler kommt weil 
+	applicationPersonUId ist auf Gemeinde ID (ein GUID) gesetzt
+	- ohne applicationPersonUId gibt es noch immer Gemeinde ID
+	in LAKIS-ON Feld in SAMW
+	
+EH BUG67770 Anzeige des Unterschiedes in allen Reitern
+	- begann mit Arbeit
+
+10 10 Dienstag
+
+MHRZ BUG67892 Absturz Statistikjob im Test
+	- gestern habe ich Bug in Status Resolved gesetzt (aber PR war abgeschlossen schon am Freitag)
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	x- machte Besprechung mit Tom Bernhard Michael (letzte commit revewed)
+	x- fertig gemacht mit Verbesserung
+		- HttpContext 
+		- getestet
+	x- PR bereit für Review von letzten Verbesserungen
+
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	- Verbesserungen entsprechend den CR Anmerkungen
+	x- auch für Review von letzten Verbesserungen bereit
+	TODO: muss ich noch testen
+
+IP BUG67761 Automatische Aktualisierung GP Unterschied IP/SAMW
+	x- ich wollte mit Arbeit zu beginnen aber es scheint das ist schon behoben in PR von anderen Bug
+		- namens "IP BUG67765 Anzeige des Unterschiedes in allen Reitern"
+
+09 10 Montag
+
+MHRZ BUG67892 Absturz Statistikjob im Test
+	- mit Bernhard - probierte Lösung mit bindingRedirect
+		x- abgeschlossen
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	x- CR mit Bernhard / Tom / Michael
+	x- Verbesserungen gepusht
+		- Unit Tests Fehler behoben
+	x- alle direkte Referenzen auf HttpContext habe ich durch SessionRepository ersetzt
+		x- auch einige die wir in Code Review nicht erwähnten
+		x - wir brauchen hier Besprechung ob das gut gemacht ist
+	TODO: mit das mache ich heute weiter
+	
+WZ BUG67759 Aktualisierung des Kontoinhabers im Dropdown-Menü
+	- CR mit Bernhard / Tom / Michael
+
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	- CR
+	
+06 10 Freitag
+
+WZ BUG67759 Aktualisierung des Kontoinhabers im Dropdown-Menü
+	x- unterschiedliche Verbesserungen
+		- Lösung für nicht-aktualisierten Inhaber-Dropdown war fertig gemacht und getestet
+		- zusätzliche Situation in Bankverbindungen Grid bemerkt
+			- in Grid sind Namen nicht aktualisiert
+			- korrigiert
+	x- bereit für CR
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	x- Verbesserungen
+		- Page_PreRender statt View_Load Verbesserung
+	x- bereit für CR
+	
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	x- Verbesserungen
+		- Page_PreRender statt Page_Load Verbesserung
+	x- bereit für CR
+
+05 10 Donnerstag
+
+x- mit Dominik Funktionalität von WZ und IP Bugfixes getestet
+	- ich bekam Test Umgebung Datenbank und konnte weitere Bugs wiederholen 
+	und Lösungen testen
+
+WZ BUG67759 Aktualisierung des Kontoinhabers im Dropdown-Menü
+	- fand eine Lösung
+
+04 10 Mittwoch
+
+MHRZ BUG67892 Absturz Statistikjob im Test
+	- Referenz hinzugefügt
+	- PR gemacht
+	- CR mit Michael
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	- ich löste merge Konflikten
+	- während CI Build gab es Problem in Job mit Tests
+		- behoben
+	- am CI getestet
+	- CR mit Michael
+	- SapGenehmigungStatus nicht gezeigt in UI nach merge
+		- gefixt
+		
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	- SAP Update Button war nicht gezeigt wie erwartet
+		- behoben
+	- CR mit Michael
+				
+WZ BUG67763 Fehlendes Anzeigen des Buttons "Mit Buchhaltung verbinden"
+	- begann mit Arbeit
+	- ich brauche Besprechung mit Dominik
+
+03 10 Dienstag
+
+WZ US67536 SAP Genehmigungsstatus setzen
+	- PR abgeschlossen
+	
+EH US67537 SAP Genehmigungsstatus anzeigen
+	- PR abgeschlossen
+
+x- mit Dominik Bugfix Funktionalität Test
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	- CR mit Bernhard und Michael
+		- Unterschied Meldung gezeigt wenn man auf klickt "SAP GP zurücksetzen"
+			- Fix gepusht
+		- verdoppelte Unterschied Meldung (erste Meldung falsch)
+			- Fix gepusht
+ 	- wir brauchen CR		
+			
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	- CR mit Bernhard und Michael
+	- noch ein UI Bug entdeckt
+		- Unterschied Meldung gezeigt nur auf zweiten Klick nach Speichern
+			- Fix gepusht
+		- verdoppelte Unterschied Meldung (erste Meldung falsch)
+			- Fix gepusht
+ 	- wir brauchen CR
+	
+02 10 Montag
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	- CI Test
+	- Problemen:
+		1 - SapSessionId auf null gesetzt wenn man eine Änderung in zB. Person Name speichert
+		2 - es gab Problemen mit Buttons Sichtbarkeit 
+		3 - Problemen mit Meldung Sichtbarkeit (in gewissen Szenario verdoppelt)
+		4 - 3 Tabs unter "WohneinheitVerwalten" Seite brauchen Meldung ganze Zeit
+
+WZ US67536 SAP Genehmigungsstatus setzen
+	- kleine Änderung nach CR
+		- bereit für Genehmigung (oder weitere Review)
+
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	- CI Test
+	- machte einige Korrekturen
+		- scheint jetzt OK zu sein
+	
+28 09 Freitag
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	x- Entwicklung fertig
+		- moegliche Loesungen:
+			- Basisklasse DI/Haushalt-svc.-Param.
+			- Extension Haushalt-svc.-Param.
+			- Basisklasse Haushalt-svc.-Param.
+	x- PR war erstellt
+		- gibt es offene Frage für Tom
+		x- wir brauchen CR
+	
+	- TODO: Sichtbarkeit der Buttons und Unterschied Meldung 
+		- sie bleiben sichtbar nach Zurücksetzen bis man 
+		in Browser "Refresh" macht
+	- TODO: überprüfe ob Tests ok
+
+IP BUG67765 Anzeige des Unterschiedes in allen Reitern
+	x- Entwicklung fertig, PR erstellt
+		- wir brauchen CR
+
+x- heute mache ich weiter mit Bug Lösungen in IP
+x- aber zuerst wurde ich gern mit Dominik uberprufen ob die Funktionalitat jetzt ok ist
+
+27 09 Donnerstag
+
+EH US67537 SAP Genehmigungsstatus anzeigen
+	- getestet am CI
+	- PR und US abgeschlossen
+	
+WZ US67536 SAP Genehmigungsstatus setzen
+	- CR Verbesserungen, Test
+	- PR und US abgeschlossen
+
+WZ BUG67768 Anzeige der Unterschiede in Haushalt und Antrag
+	- begonnen mit Umsetzung
+		- es gibt eine Frage für Dominik in F2
+
+ZF:
+- gestern habe ich ziemlich kurzer gearbeitet wegen eine unerwartete Erledigung
+- SAP Genehmigungsstatus in WZ und EH, beide PR sind reviewed, verbessert
+- begann mit IP Bugs - erste ist: Unterschied Meldung in allen Reitern
+
+
+27 09 Mittwoch
+
+EH US67537 SAP Genehmigungsstatus anzeigen
+	- SapAktiv auf false gesetzt in test config Datei und gepusht
+
+WZ US67536 SAP Genehmigungsstatus setzen
+	x- mit Bernhard, Tom, Michael CR gemacht 
+	x- Verbesserungen sind gepusht
+		- ich testete lokal
+			- TODO: am CI testen
+		x- wir können Review von Verbesserungen machen
+
+EH US67537 SAP Genehmigungsstatus anzeigen
+	x- ich habe die Entwicklung fertig gemacht
+	- PR ist erstellt
+		- ich testete lokal und am CI
+		x- wir können CR machen
+		
+- mit Dominik gab es Besprechung über Bugs und Änderungen in IP, WZ, EH
+
+26 09 Dienstag
+
+EH US67537 SAP Genehmigungsstatus anzeigen
+	- habe ich mit Implementierung begonnen
+		- es ist teilweise schon implementiert (in Datenbank und Klassen)
+		- in Tab Personen funktioniert es jetzt
+		- ich muss noch dropdown in Bankkonten implementieren
+	x- mehr als
+	
+IP BUG67703 Absturz IP Testsystem Fall 2155249
+	- mit Unterstützung von Tom und Bernhard
+	x- Logging war wegen Analyse
+		- nächst müssen wir Log nach Test anschauen
+	
+25 09 Montag
+
+WZ US67536 SAP Genehmigungsstatus setzen
+	- ich machte neue Lösung für Anweisungsstopp-Implementierung
+		- es ist gepusht, ich testete lokal, scheint zu funktionieren
+		- wir können CR machen
+		
+EH US67537 SAP Genehmigungsstatus anzeigen
+	- ich wollte mit Arbeit zu beginnen aber es scheint 
+	es gibt schon "SAP Genehmigung Status"
+	und man kann ihn auf UI sehen
+		- es funktioniert am CI
+		
+22 09 Freitag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- PR abgeschlossen
+
+- es gab Problemen mit GIT Authentifizierung
+	- Situation besteht noch immer, auch nach ich den VM neu-gestartet habe
+
+WZ US67536 SAP Genehmigungsstatus setzen
+	- Anweisungsstopp versuchte ich einzubauen
+		- hier gab es ein Problem mit Dep. Inj. (circular ref.)
+		- ich versuchte zu lösen entsprechende dem Vorschlag von Tom
+
+21 09 Donnerstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- CR mit Michael und Tom
+		- letzte offene Frage in Zusammenhang mit specflow Tests war gelöst
+		- ich testete Person und Gemeinde am CI
+
+WZ US67536 SAP Genehmigungsstatus setzen
+	- Sap Genehmigung Status ist jetzt eingebaut
+		- es gibt eine offene Frage in F2 Channel
+	- ich testete und anscheinend funktioniert es
+	
+20 09 Mittwoch
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- weiterer CR mit Bernhard und Michael
+		- weiter gemacht mit Verbesserungen und Refactoring
+		- wir können CR wieder machen
+		
+WZ US67536 SAP Genehmigungsstatus setzen
+	x- begann mit Arbeit
+		- ChangeScript, DTO Objekte
+
+19 09 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- weiter gemacht mit Verbesserungen und Refactoring
+		- ich testete alle Funktionalität und machte einige Korrekturen
+	- ich machte neue branch und begann mit Juristischer Person Umsetzung
+		- ich habe Prozess Klassen implementiert
+		
+18 09 Montag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- Problem mit einen specflow Test war gestern gelöst mit Edzus
+	- ich überprüfte alle Gemeinde Änderungen 
+		- und machte Korrekturen
+	- CR war von Bernhard gemacht
+		- es gab Verbesserungen und Refactoring
+		- dass machte ich gestern und das mache ich heute
+
+15 09 Freitag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- es gab Besprechung mit Edzus
+		- er gab mir Unterstützung mit specflow Tests
+	- unterschiedliche Anpassungen waren gemacht und gepusht
+	- alle Tests funktionieren jetzt
+		- wegen einen specflow Schritt, wenn ich Schritt 
+		implementiere bekomme ich Fehler Meldung dass Schritt verdoppelt ist, wenn ich 
+		den Schritt entferne bekomme ich Meldung das Schritt fehlt
+			
+14 09 Donnerstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- gestern habe ich weiter gemacht mit Verbesserungen 
+		- ziemlich große Refactoring von Validator und anderen Funktionalitäten
+		- ganze Funktionalität in Person und Gemeinde habe ich wieder getestet
+			- anscheinend funktioniert alles
+		- ich implementierte specflow Tests für Gemeinde (Tests wie für Person)
+			- Tests muss ich noch anpassen, Builder Teil funktioniert noch nicht
+			
+	- ich arbeite am SAP Buttons für Gemeinde Funktionalität
+	(für Person ist Funktionalität fertig)
+		- ich habe einige Fragen über specflow Tests
+			
+13 09 Mittwoch
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- alle Gemeinde SAP Buttons und FX3/SAP Vergleich war getestet und einige Fixes gemacht
+	- CR mit Bernhard und Michael
+		- ich machte Verbesserungen gestern Vormittag und das mache ich jetzt
+
+12 09 Dienstag
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- ich habe weiter gemacht mit SAP Funktionalitaet fuer Gemeinde
+		- nach Besprechung mit Bernhard habe ich GemeindeName Eigenschaft eingebaut
+		- ich habe Validator und einige Refactoring für FX3/SAP Vergleich gemacht
+		- web Methode Aufruf Verbindung Problem war gelöst
+			- es hat zu tun mit async/await, ConfigureAwait fehlte
+		- dann testete ich alle SAP Buttons für Gemeinde und machte Fixes
+			- das mache ich auch heute
+
+11 09 Montag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- erster SAP PR war abgeschlossen und merged
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- mit Bernhard haben wir Implementierung überprüft 
+	- dann habe ich weiter gemacht mit SAP Funktionalität für Gemeinde
+		- BuchTrans Methoden für Organisation waren implementiert
+			- (1) es gibt einige Fragen, einige Daten sind anscheinend nicht verfügbar
+			- (2) InitOrganisationLink gibt kein Antwort
+		- ich implementierte andere Buttons und zugehörende Funktionalität 
+			- ich teste jetzt
+
+08 09 Freitag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- weitere CR von Bernhard 
+	- meistens config Datei Verbesserungen
+	- ich machte mehrere Fixes entsprechend den Anmerkungen
+
+FX3 US66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- ich begann Implementierung von SAP Buttons für Gemeinde Objekt Typ
+		- ich erweiterte bestehende Funktionalität und muss mit Florian oder Bernhard 
+		besprechen ob das in die gute Richtung geht
+		
+07 09 Donnerstag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- mit Florian und Bernhard haben wir gestern Lösungen für "jumpback URL" 
+	Situation analysiert und getestet
+	- wir fanden auch ein Problem mit Konfiguration Eigenschaften
+		- das habe ich vervollständigt und die Änderungen sind jetzt gepusht
+		- wir können wieder anschauen
+		
+	- mit Florian und Bernhard CR fortgesetzt, 
+		- es gab einige Problemen und Verbesserungen in Zusammenhang mit 
+		config Dateien und jumpback URL gefunden
+		- mit das habe ich heute fortgesetzt
+	
+06 09 Mittwoch
+
+- kurze Tag (Arzt Termin)
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- noch ein Szenario habe ich eingebaut
+
+05 09 Dienstag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- wir machten ein Test und fanden 2 zweifelhafte Situationen
+		- erste mit Warnung "Physical person..." 
+			- passiert manchmal wenn die Anwendung startet
+			- das untersuche ich noch
+		- zweite Situation mit veraltete Session Variable
+			- behoben
+			
+		- "redirect" zurueck zu FX3 aus SAMW Situation - das haben wir analysiert 
+		und da gibt es eine offene Frage
+	- Besprechung mit Florian ueber Tests
+		- ich habe analysiert die specflow Tests weil mir die ganze Sache neu ist
+
+04 09 Montag
+	- Tag frei
+
+01 09 Freitag
+
+- gestern nahm ich einen Tag frei
+
+FX3 US65554 SAP Funktionalität
+	- CR war noch einmal von Bernhard gemacht
+		- es gab einige Verbesserungen, für eine brauchte ich Unterstützung von Florian
+	- alle sind jetzt gepusht und können überprüft werden
+	
+FX3 US 66878 SAP - weitere Antragstellertypen für SAP Verknüpfung
+	- begann mit Umsetzung
+	
+	
+31 08 Donnerstag
+
+FX3 US65554 SAP Funktionalität
+	- CR und Verbesserungen
+	- TEST OB ZURUECKSETZEN OK
+	- BPK TESTEN
+
+30 08 Mittwoch
+
+FX3 US65554 SAP Funktionalität
+	- Umsetzung habe ich getestet 
+	- ich überprüfte alle Änderungen und machte mehrere Verbesserungen
+	- machte merge von develop in feature branch
+	- jetzt kann ich weiter SAP Buttons einbauen, auf andere Orte in FX3, wenn nötig 
+		- oder wir können CR machen
+		
+29 08 Dienstag
+
+BUG66787 Absturz in Testsystem bei Aufruf eines Antrags
+	- Fix war eingebaut, PR abgeschlossen
+
+WZ BUG66676 SAP - Zahlungsgrund5 SAP GP ID setzen, wie bei IP
+	- PR und BUG abgeschlossen
+
+FX3 US65554 SAP Funktionalität
+	x- accountingAddressUId Funktionalität
+		- lokale Adresse die schon bestehen in SAP sind in Session gespeichert und wahrend Update benutzt
+	x- lokale Person / SAP Person Vergleich und Adressen in Session waren von Florian überprüft
+	x- unterschiedliche andere Verbesserungen
+
+28 08 Montag
+
+- gestern hatte ich einige Probleme mit VPN Verknüpfung, VM konnte nicht gestartet werden
+	- Michael Hauer musste das beheben
+
+FX3 US65554 SAP Funktionalität
+	- implementierte FX3/SAP Person Vergleich 
+		- wir müssen noch entscheiden wie behandeln wir Situation mit Session,
+		ich fragte Florian nach einer Besprechung
+
+WZ BUG66676 SAP - Zahlungsgrund5 SAP GP ID setzen, wie bei IP
+	- PR noch offen
+		- Rückinformation von Alex und Tom ist nötig
+
+25 08 Freitag
+
+FX3 US65554 SAP Funktionalität
+	- "Mit Buchhaltung verknüpfen" Button Funktionalität war vervollständigt
+		- mithilfe von Florian
+		- jetzt funktioniert Speicherung von Daten-Änderungen, 
+		"redirects" zu SAMW und zurück, 
+		Informationsmeldungen nach "redirects"
+	- "zurücksetzen" Button - funktioniert vollständig auch
+	- ich begann "SAP Person"-"lokal Person" Vergleich zu implementieren
+
+24 08 Donnerstag
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- Anmerkungen implementiert und PR abgeschlossen
+
+WZ BUG66676 SAP - Zahlungsgrund5 SAP GP ID setzen, wie bei IP
+	- ein Implementierungsvorschlag von Alex war umgesetzt
+
+FX3 US65554 SAP Funktionalität
+	- weiter gemacht
+
+AnweisungsTab
+
+23 08 Mittwoch
+
+- WZ EH IP Null Eigenschaften Bugs waren abgeschlossen
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- merge Konflikt war gelöst
+	- PR ist jetzt veröffentlicht und wartet auf CR
+
+WZ BUG66676 SAP - Zahlungsgrund5 SAP GP ID setzen, wie bei IP
+	- analysierte die Situation in IP und WZ und versuchte Lösung zu finden
+
+FX3 US65554 SAP Funktionalität (Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden)
+	- fortgesetzt mit Implementierung
+		- für Bernhard oder Tom gibt es eine Frage über Speichern in Controller Teil,
+		also "Presentation" Projekt in FX
+
+22 08 Dienstag
+
+WZ BUG66647 Änderung für Null Safe bei Buchtransview wie in MHRZ durchführen
+	- ich implementierte Fix
+	- PR Anmerkungen waren auch umgesetzt
+	- gleiche Verbesserung war eingebaut auch in IP und EH
+
+FX3 US65554 SAP Funktionalität (Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden)
+	- fortgesetzt mit Implementierung
+
+21 08 Montag
+
+FX3 US65554 SAP Funktionalität (Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden)
+	- fortgesetzt mit Umsetzung, ein Teil Code musste ich bisschen verarbeiten nach Antwort von Florian
+	über eine Situation mit Speichern
+
+- unterschiedliche CRs mit Bernhard und Michael:
+
+WZ Fehler Meldung statt Ausnahme für ReadAccountingPerson
+	- abgeschlossen und merged
+	- in EH und IP war gleicher PR abgeschlossen
+		- IP - abgeschlossen und merged
+		- EH - abgeschlossen und merged
+	
+MHRZ US66322 GP Update
+	- Anmerkungen aus CR umgesetzt
+	- neuer CR können wir machen
+	
+WZAntrag SDK Format
+	- abgeschlossen und merged
+	
+18 08 Freitag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	x- ich habe die BuchTrans* Config Eigenschaften aus Datenbank in web/app.config umgestellt
+	- Situation mit "SitzungInfoView wurde gespeichert." Meldung 
+		- ich dachte es gibt kein "redirect" in SAMW wenn man klickt "Geschäftspartner übernehmen" 
+			- es gibt "redirect" aber es funktioniert nicht an lokalen Umgebung
+		- versuchte Situation zu beheben
+	- Situation mit lokalen Änderungen in SAP Spalten nicht gespeichert
+		- dass muss man explizit in FX3 machen
+		- ich habe dem Florian eine Frage gestellt
+	x- ich habe Buttons "Implementierung In Buchhaltung öffnen", "SAP GP zuruecksetzen" implementiert
+	x- begann Button "SAP GP andern" zu implementieren
+		- das konnte bisschen länger dauern als andere Buttons weil hier muss man Session nutzen
+	x- es besteht offene Fragen für Florian (wie speichert man Änderungen am Objekt, und wie ist eine saubere Weise das zu machen)
+		- 
+	
+17 08 Donnerstag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	x- ich habe BuchTrans* Config Eigenschaften fertig gemacht
+		- hier gab es Situation wo ich in viele Klassen Eigenschaften implementierten müsse weil viele Klassen implementieren IConfigurationProvider
+	x- ich habe in die Datenbank Config Werte hinzugefügt
+	x- ich habe "Mit Buchhaltung verknüpfen" Button fertig gemacht
+		x- ich habe unterschiedliche Teile von Funktionalität angepasst
+		x- ich begann Button zu testen
+			- fand eine unerwartete Situation 
+				- statt "redirect" von SAMW bekomme ich eine Information Meldung wenn ich GP übernehme - das untersuche ich momentan, ob alle übergebene Daten korrekt sind
+
+16 08 Mittwoch
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- machte weiter mit Umsetzung
+		- BuchTrans Referenz hinzugefügt
+			- mehrere Anpassungen waren notwendig, es gibt noch einige die ich implementieren muss
+		- BuchTrans* Eigenschaften musste ich in vielen unterschiedlichen *ConfigurationProvider Klassen implementieren
+		- Sap* Eigenschaften musste ich in vielen unterschiedlichen *ViewModel Klassen implementieren
+
+11 08 Freitag
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- ich habe fortgesetzt mit Implementierung
+		- machte "Mit Buchhaltung verknüpfen" Button und unterschiedliche andere Klassen und Interfaces
+		- SQL "change script"
+	- hatte Besprechung mit Florian, es war sehr hilfreich
+
+10 08 Donnerstag
+
+WZAntrag
+	- Kompilierten Datei-Attributen Bug habe ich gelöst
+	- jetzt ist Migration fertig
+	- PR ist bereit für CR
+
+FX3 US65554 Jeder Antragsteller benötigt die Möglichkeit, mit SAP verknüpft zu werden
+	- begann Umsetzung nach Besprechung mit Florian und Alexander 
+
+09 08 Mittwoch
+
+WZ CI Build Fehler mit nuget.config
+	- korrigiert entsprechend dem Vorschlag von Alex
+	- neuer war PR erstellt, und abgeschlossen, merge gemacht
+
+WZAntrag
+	- SDK Format Migration vervollständigt 
+	- PR erstellt
+	- Implementierung ist fertig, es gibt noch ein Bug
+		- in kompilierten Dateien sind ProductVersion, ProductName und andere Datei Attributen
+		die aus Projekt kommen nicht in Datei Eigenschaften ubergenommen
+			- wenn ich dass löse beginne ich mit FX
+
+08 08 Dienstag
+
+WZAntrag
+	- begann mit SDK Format Migration
+
+IP BUG66418 SAP-GP Status Änderung
+	- wir sagten gestern das die Funktionalität bleibt wie es ist bis Besprechung mit Axel
+	- unbehandelte Ausnahme in ReadAccountingPerson war mit Fehler Meldung umgestellt
+		- auch in WZ, EH, MHRZ
+		- für WZ und EH erstellte ich neue PR
+
+WZ
+	- seit ich WZ i SAP-GP Status Änderung
+	- wir sagten gestern das die Funktionalität bleibt wie es ist bis Besprechung mit Axel
+	- unbehandelte Ausnahme in ReadAccountingPerson war mit Fehler Meldung umgestellt
+		- auch in WZ, EH, MHRZ
+		- für WZ und EH erstellte ich neue PR
+
+WZ
+	- seit ich WZ in SDK Format konvertierte passiert nach "merge" ein CI Build Fehler
+n SDK Format konvertierte passiert nach "merge" ein CI Build Fehler
+		- er lautet "Ensure no .nuget config"
+				- ich muss das beheben
+
+07 08 Montag
+
+MHRZ US66322 GP Update
+	- ich konnte nicht viel testen weil die BuchTrans "service" funktionierte nicht
+	- ich habe PR überprüft
+		- kleinere Verbesserungen waren eingebaut
+	- einige Unit Test Fehler entstanden während CI Build und waren behoben
+		- MHRZ SAP-GP kann man jetzt am CI testen (wenn BuchTrans funktioniert)
+	
+WZAntrag
+	- wollte den Projekt in SDK Format konvertieren aber ich habe keine Berechtigungen 
+	auf Projekt
+	
+IP BUG66418 SAP-GP Status Änderung
+	- versuchte Bug zu wiederholen aber	konnte nicht weil BuchTrans "service" funktionierte nicht
+	- in IP wenn man öffnet Geschäftsfall eine Fehler-Seite war gezeigt und Geschäftsfall war nicht weiter editierbar oder sichtbar
+		- ich machte eine Änderung wo der Mitarbeiter weiter in Anwendung arbeiten kann
+			- Fehler Meldung ist gezeigt aber keine "unhandled Exception" Situation
+		- Frage ist ob wir diese Verhältnis in IP und anderen Anwendungen wollen (WZ, EH, MHRZ)?
+	- es gibt noch eine Frage war über automatischen "Genehmigt" Status 
+		- wie kann die Anwendung Status abfragen
+	
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- wir sagten es gibt keine Probleme mehr, aber es gibt niemand momentan um CR zu machen
+		- deswegen konnte ich den Bug und PR nicht abschließen
+
+04 08 Freitag
+
+MHRZ US66322 GP Update
+	- Implementierung fertig gemacht
+	- muss ich noch unterschiedliche Fälle testen
+	
+EH GP Update
+	- während MHRZ Implementierung habe ich bemerkt 
+	dass Session nicht auf null gesetzt ist wenn man "SAP GP zurücksetzen klickt"
+	- andere Anwendungen mit GP Update Implementierung sind nicht betroffen 
+	
+03 08 Donnerstag
+
+MHRZ US66322 GP Update
+	 - Implementierung von Administration-Kontakte
+
+WZ SDK Format Migration
+	- einige Verbesserungen, CI Build lauft ohne Fehler
+		- CR wegen Domain.Antrag Klasse und namespace ist nötig
+	
+02 08 Mittwoch
+
+MHRZ US66322 GP Update
+	- ich machte weitere Implementierung
+		- Methoden und Klassen für Vergleich
+		- am Tab Objektdaten habe ich Unterschied-Warnung eingebaut
+		- begann mit Implementierung am Tab Administration-Kontakte
+			- musste ich bisschen Code analysieren, 
+			Architektur scheint bisschen unterschiedlich als IP WZ EH
+
+WZ SDK Format Migration
+	- wir machten CR mit Tom und Bernhard
+		- Verbesserungen waren gepusht
+		- es gab Probleme als ich InternalsVisibleTo entfernte - ich machte GIT revert
+		von diesen Änderungen
+	
+01 08 Dienstag
+
+WZ SDK Format Migration
+	- letzte 2 von 3 CI Build Fehler waren behoben
+	- CI Build und Job laufen ohne Fehler
+
+MHRZ US66322 GP Update
+	- begann mit Implementierung
+
+31 07 Montag
+
+EH GP US66224 Update
+	- CR mit Tom und Bernhard
+	- Verbesserungen waren eingebaut
+	- PR abgeschlossen
+
+WZ SDK Format Migration
+	- ich habe die Änderungen fertig gemacht, es gab einige Problemen mit Unit Tests
+		- ein behoben, anderer Problem ist noch vorhanden
+		
+28 07 Freitag
+
+WZ/IP GP Update Fixes
+	- PR war genehmigt und jetzt sind sie abgeschlossen und gemergt
+
+DHVW Buchungsdaten Export
+	- ich habe eine Situation von Dominik und Alen gemeldet untersucht
+		- das war auch aufgeklärt
+		
+EH GP US66224 Update
+	- ich habe den PR noch überprüft
+		- Bernhard machte CR und lässt einige Fragen ich versuchte Antworte zu geben
+
+WZ SDK Format Migration
+	- ich begann mit dieser Arbeit
+
+27 07 Donnerstag
+
+WZ/IP GP Update
+	- nach CR von Bernhard habe ich mehrere Verbesserungen eingebaut
+	- es gab Probleme mit "Visible" Eigenschaften von "SapGeschaeftspartnerAendern" Button
+	in WZ und IP, das habe ich behoben
+	- jetzt ist PR bereit für CR
+		
+EH GP US66224 Update
+	- auch mehrere Verbesserungen nach CR
+	- PR ist auch bereit für CR
+
+26 07 Mittwoch
+
+- WZ/IP noch einige Verbesserungen waren eingebaut
+	- zB. GeburtsDatum, ZustellAdresseSapAdressNummer...
+	- PR ist jetzt veröffentlicht
+
+EH GP US66224 Update
+	- ich habe die Implementierung getestet
+		- unterschiedliche weitere Anpassungen habe ich gemacht
+	- PR ist veröffentlicht und bereit für CR
+
+25 07 Dienstag
+
+- in WZ und IP GP-Update Implementierungen machte ich kleinere Verbesserungen 
+(Variable Namen und Kommentaren)
+	- wir können PR anschauen
+
+- in IP machten wir Test von "GP Update" Funktionalität mit Dominik und Bernhard
+
+EH GP US66224 Update
+	- ich habe die Implementierung fast fertig gemacht, muss ich testen und überprüfen 
+	- ich machte PR, nach Test und Überprüfungen 
+	werde ich den PR veröffentlichen
+
+24 07 Montag
+
+WZ US63623 GP Update
+	x- mit Tom und Bernhard machten wir ein CR
+		x- es gab einige Verbesserungen 
+		x- PR  war abgeschlossen und US in Status "Resolved" gesetzt
+
+EH GP US66224 Update
+	x- begann Arbeit an die EH Anwendung
+	- ich analysierte wie und wo soll ich Funktionalität einbauen
+	x- begann mit Implementierung
+
+21 07 Freitag
+
+WZ US63623 GP Update
+	- mit Michael, Tom, Bernhard gab es ein CR
+		- ich bekam Antworten auf offene Fragen und dann 
+		konnte ich die Implementierung fertig machen
+	- ich machte auch mehrere kleinere Korrekturen
+	- ich fand eine mögliche Fehler in GetAdditionParameter Methode 
+	und versuchte ihn zu beheben
+	- ich habe die Implementierung getestet, es sollte wie IP funktionieren
+	- in PR gab es einige Merge Konflikte, das war behoben
+	- während Build gab es "Null Reference" Fehler in einigen Unit Testen
+		- das ist auch behoben
+	- wir können CR machen und testen
+	
+20 07 Donnerstag
+
+IP TK65964 Check Unterschied (US65411 GP Update)
+	- mit Tom und Bernhard machten wir CR
+		- es gab einige Verbesserungen
+
+WZ US63623 GP Update
+	- Funktionalität aus "IP TK65964 Check Unterschied" ist jetzt in WZ eingebaut
+		- ich machte notwendige Anpassungen und Änderungen
+			- es gibt einige Fragen
+		- wenn wir diese Fragen aufklären können wir testen:
+			1 - kein Staatcode Eigenschaft in BuchTransAdresseCompareDto
+			2 - View_SapGeschaeftspartnerAendernAction - FEHLER HIER - wohneinheitDto.Id ist Guid.Empty
+			3 - es gibt Vergleich in SetupView - das bedeutet es gibt SAP Abfrage jedes mal wenn 
+			man klickt auf Tab
+				das bedeutet "Visible" zu setzen hat kein Effekt, deswegen wird 
+				"Visible" und Prüfung in SetupView gesetzt
+	
+19 07 Mittwoch
+
+WZ US63623 GP Update
+	- commit und push von letzten Änderungen habe ich gemacht 
+		- es gibt zwei Fragen
+			- das koenen wir besprechen oder CR machen
+	- TODO: "IP TK65964 Check Unterschied" - Funktionalitaet uebertragen
+		
+IP TK65964 Check Unterschied (US65411 GP Update)
+	- Prüfung implementiert beim Öffnen einen Geschäftsfall
+		- es gibt einige Fragen
+			- fuer das auch können wir CR machen oder besprechen
+	- ich habe getestet alle Situationen die ich ausdenken konnte, es scheint als es funktioniert
+
+18 07 Dienstag
+
+IP US65411 GP Update
+	x- US abgeschlossen
+		- beide Tasks waren geschlossen ("Button am Reiter 'Personen'" und "Adresse aktualisieren")
+	x- PR waren gemergt
+
+WZ US63623 GP Update
+	x- ich habe die letzte Funktionalität aus IP in WZ eingebaut
+		- das heißt:
+			- "update" Button ist gezeigt wo die Unterschied-Meldung gezeigt ist
+			- Funktionalität aus Task "Adresse aktualisieren" ist in Session 
+			gespeichert wenn Vergleich läuft
+	- Adresse der Wohneinheit ist für den GP verwendet
+	- ich implementiere noch immer die Adresse Funktionalitaet - da gibt es einige Problemen
+	x- ich implementiere noch immer UI - da gibt es eine Situation die ich lösen muss
+
+17 07 Montag
+
+IP US65411 GP Update
+	- PR merged, US noch nicht abgeschlossen
+	- ich habe den "SAP-GF Partner ändern" Button am Reiter Personen eingebaut
+		- ich implementierte einige Änderungen nach CR, wir können neue CR machen
+			- TODO: später US abschließen
+	- es gab Problem mit Geburtsdatum übergeben 
+		- das war von Axel behoben
+		- ich protokollierte neuen GF und testete
+	
+IP TK65814 Adresse aktualisieren (IP US65411 GP Update)
+	- wir machten CR und Test und ich implementierte einige Verbesserungen
+	- wir können neuen CR machen
+
+WZ US63623 GP Update
+	- ich begann letzte Funktionalitäten aus IP in WZ einzubauen, das werde ich heute weiter machen
+		- das heißt:
+			- "update" Button gezeigt wo Unterschied-Meldung gezeigt ist
+			- "Adresse aktualisieren" Funktionalität
+	- TODO: "Adresse der Wohneinheit für den GP zu verwenden"
+
+14 07 Freitag
+
+WZ US63623 GP Update
+	- kleinere Anpassungen
+	- Funktionalität getestet
+		- anscheinend funktioniert es - Vergleich und "update" bzw. Link zu editierbare Werten in SAMW
+	- Frage: wenn man ändert eine Adresse für Gesamtobjekt dass passiert in
+		GesamtobjektVerwaltenPagePresenter Klasse - aber dort gibt es nicht Haushalt und Antragsteller
+		- deswegen gibt es noch keine Meldung wenn man ändert Adresse in Gesamtobjekt
+	- TODO: "Adresse aktualisieren"-Task Implementierung einbauen wie in IP
+
+IP US65411 GP Update
+	- entfernte "Adresse aktualisieren"-Task Implementierung aus branch 
+		- jetzt haben wir ein branch fuer GP-Update User Story
+		- in anderen branch haben wir Implementierungsvorschlag für Task "Adresse aktualisieren"
+	
+IP TK65814 Adresse aktualisieren (IP US65411 GP Update)
+	- erstellte neue branch mit einem Implementierungsvorschlag für 
+	Adresse "Adresse aktualisieren"-Task
+	
+13 07 Donnerstag
+
+IP US65411 GP Update
+	- ein Bugfix war gefunden für geänderte-Daten-nicht-in-SAMW-gezeigt Problem
+		- mit Hilfe und nach Besprechung mit Axel, Bernhard, Tom, Dominik
+	- weitere CR Anmerkungen waren eingebaut
+		- wir können CR machen
+	- versuchte zu implementieren "TK65814 Adresse aktualisieren":
+		- während "SAP GP Read" ist accountingAddressUId gespeichert in Session
+		wenn kein Unterschied zwischen IP und SAP Adresse gefunden
+		- während "SAP GP Update" ist ZustellAdresse vergleicht mit Adressen aus Session 
+		gelesen und accountingAddressUId ist gesetzt wenn gleiche SAP Adresse gefunden
+
+WZ
+	- ich habe wieder die ganze Aenderungen von IP nach WZ ueebertragen (ausgenommen Adresse in Session,
+	das müssen wir noch überprüfen)
+		- TODO: Adresse-ID in Session einbauen wie in IP
+	
+12 07 Mittwoch
+
+WZ
+	- geänderte Funktionalität aus IP in WZ übertragen
+
+IP US65411 GP Update
+	- Verbesserungen und Anpassungen nach CR
+		- Code war umstrukturiert
+	- Änderungen getestet (neuer Geschäftsfall protokolliert 
+	und Vergleich und Aktualisierung ausprobiert)
+	- wir können wieder CR machen
+	- ich fand ähnliche Situationen wie mit Adresse 
+		- Änderung in Vorname und Familienname 
+		ist auch nicht sichtbar in SAMW
+	
+11 07 Dienstag
+
+IP US65411 GP Update
+	- Verbesserungen gemacht nach Code Review
+		- "Update" Methode verarbeitet
+	- wir können Code Review machen
+
+10 07 Montag
+
+WZ
+	- Funktionalität von "US65411 GP Update" aus IP habe ich in WZ implementiert
+		- es gibt noch ein Paar Plätze wo man Person/Adresse/Bankkonto Daten speichert,
+		da muss ich Vergleich und Meldung einbauen
+		- nächst muss ich testen und eventuelle Fehler beheben
+
+IP US65411 GP Update
+	- Verbesserungen (Fehler Meldung eingebaut wenn Person aus SAP nicht PhysicalPersonType ist)
+	- mit neuen GF getestet -schaut als es funktioniert (Vergleich und Update auch)
+
+07 07 Freitag
+
+- habe ich bisschen kurzer gearbeitet
+
+IP US65411 GP Update
+	- habe ich Fixes eingebaut:
+		- in Vergleich, wenn SAP IBAN Liste leer dann wird IBAN ignoriert in Vergleich
+		- GetBankkonten() Methode konnte leere Elemente zurückgeben - auch gefixt
+	
+06 07 Donnerstag
+
+IP US65411 GP Update
+	- Vergleich Bugs gefixt 
+	- Unterschiede in Eigenschaften zwischen IP und SAP sind jetzt in Meldung gelistet
+
+05 07 Mittwoch
+
+
+IP US65411 GP Update
+	x- ich machte weiter
+		x- Vergleich Funktionalität war verbessert - einige Bugs gefixt
+		x- InitPersonLink Aufruf implementiert für "update" Button
+		- mit Dominik getestet 
+			- versuchten wir Situationen mit Staat und Hausnummer zu lösen
+			- BIC Situation müssen wir noch besprechen
+		- Prüfung und Meldung eingebaut auch am "Personen" Reiter, wenn man "Speichern" Button drückt
+			- ich muss noch prüfen ob es gibt andere Plätze wo die Person Daten bzw. 
+			Name, Adresse und Konten geändert sind
+
+04 07 Dienstag
+
+IP US65411 GP Update
+	- ich machte ein paar Testen mit Dominik
+	- es gab unterschiedliche Bugfixes und debugging
+
+03 07 Montag
+
+IP US65411 GP Update
+	- GP Update Methode implementiert
+	- UI Aenderung implementiert
+	- push gemacht, 
+		- ich muss teste und dann können wir CR machen
+
+30 06 Freitag
+
+IP US65411 GP Update
+	- am Freitag gab es eine Änderung, musste ich Methoden verarbeiten und auch UI ändern
+		- heute Vormittag mache ein commit dann können wir ansehen
+
+29 06 Donnerstag
+
+- ich hatte Problemen mit VM, manchmal war er sehr langsam (scrollen und klicks dauerten 
+	ein paar Sekunden)
+- ich hatte während der Pause eine längere Erledigung
+
+IP US65411 GP Update
+	- ich verarbeitete die Methoden, verknüpfte mit "Speichern" Methode in "Antrag" Tab
+	- machte PR Entwurf, wir können anschauen und sehen ob ich
+	von dem richtigen Objekt lokale Daten für den Vergleich ziehe
+
+*** frage für SAP Termin: 
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW	
+	- ist es getestet und alles funktioniert jetzt?
+
+28 06 Mittwoch
+
+IP US65411 GP Update
+	- ich implementierte weiter Methoden für lesen, vergleichen, und update
+	- es gab Problem mit "service" Aufrufen wahrend Testen 
+		- mit Hilfe von Tom, Bernhard und Axel war es gelöst 
+	- ich habe fortgesetzt, es gibt eine weitere Frage über Geschäftslogik
+		- ich glaube das könnte ich heute fertig machen
+
+27 06 Dienstag
+
+IP US65411 GP Update
+	- ich bekam Zutritt zu Quellcode von BuchTrans Service
+	- versuchte Quellcode zu analysieren und Axels Methode zu verwenden
+	- ich bekam Hinweise und Infos von Bernhard und Tom
+	- es besteht offene technische Frage
+	- ich begann Implementierung zu machen aber 
+	ich brauche noch bisschen mehr Unterstützung bzw. einige technische Infos, 
+		Consulting von Tom oder Bernhard :)
+
+26 06 Montag
+
+- habe ich bisschen kürzer gearbeitet wegen einer verlängerte Erledigung
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- neuste Fehler behoben, commit war gepusht
+	- Alex kann testen
+
+IP BUG65410 IBAN hinzufügen
+	- schon korrigiert in "IP BUG64182 Fehler - Wechsel auf Antrag mit EAW" als einer der Fixes
+	- gleicher Fix war verwendet in "IBAN hinzufügen" Bug
+	- Bernhard machte CR und danach machte ich kleine Verbesserung
+	
+IP US65411 GP Update
+	- begann mit Arbeit, gibt es einige Fragen in F2
+
+FX
+	- Wiki weiter gelesen
+
+23 06 Freitag
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	x- ich machte möglicher Fix für letzte gemeldeten "AnmerkungenAnzeigen" Null Ausnahme 
+		- gepusht obwohl das ein "workaround" ist
+		- konnte nicht testen weil ich konnte nicht das Problem wiederholen
+	- wir brauchen auch ein CR weil der PR enthält mehrere Fixes
+		die korrigieren unterschiedlichen "null Referenzen"
+	x- auf CI habe ich getestet:
+		- einen neuen GF und ganze Lebenslauf bis Anweisungslisten machte, 
+		keine Fehlern waren gemeldet
+		
+FX
+	- ich habe den Wiki weiter gelesen
+		
+		
+22 06 Donnerstag
+
+DHVW Buchungsdaten Export
+	x- ich habe getestet und erforscht einige Situationen mit Daten nach letzten Änderungen
+		- "Aschauer" hatte kein GP-ID
+	x- US ist fertig
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	x- wieder getestet mithilfe von Dokumentation - neuer GF und ganze Lebenslauf bis Anweisungsliste
+	x- ich habe einige neu-gefundene Fehlern behoben
+		- KreditBankKonto null (IG)
+		- AnweisungsTab braucht setter - Fehler am Schritte 16 (IG)
+		- brAnmerkungenEinblenden Data Binding (Alex)
+	
+FX
+	- ich erstellte lokale Datenbank und startete Anwendung, las die Dokumentation
+	
+21 06 Mittwoch
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- ich habe den Fix getestet
+		- versuchte alle Tabs zu öffnen und am jeden Tab und dann Buttons drücken
+	- ich versuchte auch 
+
+DHVW Buchungsdaten Export
+	- eine kleinere Verbesserung 
+		- (GP-ID aus Betriebe Tabelle statt Dorfhelferinnen)
+
+FX
+- ich lies FX3 Wiki 
+- versuchte ich lokale Datenbank und GIT Repo zu erstellen
+
+20 06 Dienstag
+
+EH US56843 Zession - Übergabe an SAP
+	- wir machten ein CR
+		- danach gab es einige Verbesserung, das pushte ich
+			(Abfrage Logik in Geschäftsfall Service versetzt, 
+			Bernhard fand noch einige mögliche Verbesserungen)
+	
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- neuer Fehler war aufgetretenen und behoben
+	- später noch weitere Fehler
+		- ich machte push aber konnte nicht den Fix testen und weitere Tabs testen 
+	weil ich habe einen nicht-verwandten Fehler in VS
+	"The project file cannot be loaded" (auch in main branch)
+
+
+19 06 Montag
+
+DHVW Buchungsdaten Export
+	- mit Dominik haben wir eine Korrektur gemacht
+		- wir warten noch auf einige Rückinformationen (führende Nulls in GP-ID)
+
+MHRZ SDK Format
+	- erstellte PR, machte einige Verbesserungen
+	- wir brauchen CR
+
+EH US56843 Zession - Übergabe an SAP
+	- ich machte Bankkonto Daten Übergabe in MitBuchhaltungVerknuepfen Methode 
+	https://tfs01.noel.gv.at/DefaultCollection/EH/_git/EH/pullrequest/8707
+		- vielleicht können wir PR anschauen
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- Fehler behoben auf noch einem Ort
+		- wie kann ich testen das so etwas jetzt an allen Plätzen behoben ist 
+			- ich denke dass es konnte noch andere Plätze in die Anwendung geben
+			wo das gleiche passiert
+
+IP - noch eine verdächtige Situation wo app.config automatisch geändert ist
+	- ich stellte eine Frage in F2, ob das auch den anderen passiert
+
+16 06 Freitag
+
+- hatte ich einige Probleme mit Citrix, nach dem Update war es besser
+
+EH US56843 Zession - Übergabe an SAP
+	- bekam Antwort auf meine Frage von Tom aber brauchte noch Unterstützung von Tom
+		- ein Besprechung mit Alex, noch eine offene Frage
+
+MHRZ SDK Format
+	- ich konvertierte das Projekt zu SDK Format
+	- das ist fertig aber PR ist noch nicht erstellt
+
+15 06 Donnerstag
+
+- bisschen kürzer gearbeitet
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- Fix gepusht 
+		- Bug abgeschlossen
+	- ich machte auch ein Fix für Build Fehler in noe.WT.Core
+	
+EH US56843 Zession - Übergabe an SAP bzw. im EH
+	- begann mit Implementierung
+	- analysierte den Code und stellte eine Fragen in F2
+
+14 06 Mittwoch
+
+DHVW Buchungsdaten Export
+	- Verbesserungen nach Review von Dominik und unterschiedliche Änderungen
+		- Betrag großer als 0 Prüfung
+		- UTF8 ohne BOM
+		- Datum in Buchungsdaten Datei Namen
+	
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- ich machte ein Fix wie beschrieben in F2
+	- aber noch nicht gepusht weil ich Problemen mit VM hatte
+		- VM war langsam
+	
+13 06 Dienstag
+
+DHVW Buchungsdaten Export
+	x- machte Änderungen und Verbesserungen nach Review von Dominik
+		- in FileDialog und erstellte Info Meldung wenn Export fertig ist
+	x- ich verbesserte Abfrage 
+		- machte JOIN zwischen Dorfhelferinnen und Betriebe Tabellen
+		x- ich habe ein Beispiel von Export Datei in F2 gesendet, DOminik und Julia können prüfen ob die Daten genau sind
+	x- es gibt noch immer ein Problem mit UTF-8, was wir bekommen ist UTF-8 mit BOM (Byte Order Mark)
+	und wir brauchen ohne BOM
+		- es gibt Lösungen, dass werde ich nächst implementieren
+				
+12 06 Montag
+
+DHVW US64870 GP-ID verwalten
+	- Implementierung der GP-ID Spalten in Datenbank und Felder in UI war fertig gemacht
+	x- gestern habe ich Excel Export implementiert, heute werde ich testen
+	
+EH US64869 EH und SAMW Verhalten prüfen und gegebenenfalls ändern
+	- zugesichert und bewilligt Abfragen waren ersetzt mit Sitzungsreife Prüfung für Geschäftsfall
+
+09 06 Freitag
+
+EH US64869 EH und SAMW Verhalten prüfen und gegebenenfalls ändern
+	- implementierte zugesichert/bewilligt Abfragen entsprechend dem Antwort von Alex
+	- machte Verbesserung nach CR von Bernhard
+	- gibt es noch eine Frage für Alex oder Tom unter Kommentaren in PR
+
+DHVW US64870 GP-ID verwalten
+	- begann mit Arbeit
+		- gibt es eine Frage 
+			(über der Datenbank Version (ob ich letzte und richtige Version nutze)
+	- Fragen:
+	1 - soll ich Spalte SapGeschaeftspartnerId in die Tabellen "Dorfhelferinnen" und "Betriebe" einbauen?
+
+07 06 Mittwoch
+
+IP SDK-Format
+	- PR abgeschlossen und merged
+
+IP US64604 Zusicherung unterbinden, wenn der SAP Genehmigungsstatus Offen ist
+	- Bernhard machte ein Fix für fehlende Unit Test
+		- SapActive war hinzugefügt zu app.config in noe.IP.Test.Mock Projekt
+		- kein Unit Test Fehler am CI Build
+	- wir können CR machen und dann PR schließen
+			
+IP US64603 Änderung beim Verhalten im Durchlauf mit einer Geschäftspartner Änderung
+	- Verbesserungen nach CR von Bernhard
+		x- Bernhard gab Genehmigung, ich gab zweite Genehmigung
+	- US und PR abgeschlossen
+
+EH US64869 EH und SAMW Verhalten prüfen und gegebenenfalls ändern
+	- Implementierung fertig gemacht, erstellte PR, machte push
+	- aber es gibt eine offene Frage (in F2 geschrieben - zugesichert/bewilligt)
+
+06 06 Dienstag
+
+EH US64869 EH und SAMW Verhalten prüfen und gegebenenfalls ändern
+	x- ich habe fortgesetzt mit Implementierung
+	- gab es einige Problemen mit ThreadAbortException
+		- wenn eine Service Klasse ruft andere Service Klasse Anwendung blockierte die Anwendung
+	x- ich glaube US wird heute während Vormittag fertig sein
+
+05 06 Montag
+
+IP SDK-Format
+	- mit Hilfe von Peter ist nun CI Build Problem behoben
+	- wir können vielleicht SDK-Format PR abschließen
+ 
+DHVW US64871 Excel-Export erstellen
+	- begann mit Arbeit, ich warte auf die Berechtigungen und Datenbank
+
+EH US64869 EH und SAMW Verhalten prüfen und gegebenenfalls ändern
+	- begann mit Implementierung
+
+IP US64603 Änderung beim Verhalten im Durchlauf mit einer Geschäftspartner Änderung
+IP US64604 Zusicherung unterbinden, wenn der SAP Genehmigungsstatus Offen ist
+	- Fragen und Verbesserungen, wir warten auf Bernhard 
+
+02 06 Freitag
+
+IP US64603 Änderung beim Verhalten im Durchlauf mit einer Geschäftspartner Änderung
+	- wir haben CR gemacht mit Bernhard und Tom
+	- Verbesserungen gepusht, wir brauchen neue CR
+
+IP SDK-Format
+	- [MONTAG] Peter fragen 
+
+IP US64604 Zusicherung unterbinden, wenn der SAP Genehmigungsstatus Offen ist
+	- ich machte neuen Unit Test, aber es gibt einige Fragen in PR Kommentar
+	- wir können CR machen
+
+- während Nachmittag hatte ich Problemen mit VM, zB. ein Klick oder Tasten Druck dauerte 3-5 Sekunden
+
+- ich bemerkte das Unit Tests Vorfixierung_Funktioniert_Mit_Iban_Kreditkonto und Vorfixierung_Funktioniert_Mit_Iban_Zuschusskonto gleiche Definition haben - beide prüfen ZuschussKonto
+
+01 06 Donnerstag
+
+x- hatte Problem mit Genome Lizenz, sie war abgelaufen, 
+das war gelöst mit Hilfe von Peter und Tom
+	- ich habe dem Michael Hauer Email mit Beschreibung gesendet
+
+IP US64603 Änderung beim Verhalten im Durchlauf mit einer Geschäftspartner Änderung
+	x- ich habe fortgesetzt mit Implementierung
+		- warum ist nicht Vergleich Service Methode:
+			1 Deadlock wenn Aufruf ist vor Commit Aufruf
+			2 Nicht leicht zu bestimmen ob Aufruf Erstellung oder Aktualisierung ist bzw. Create oder Update
+	x- wir können CR machen
+
+IP US64604 Zusicherung unterbinden, wenn der SAP Genehmigungsstatus Offen ist
+	- nach CR von Bernhard gab es einige Änderungen
+		- ich muss ein neuer Unit Test machen, das mache ich heute
+	
+31 05 Mittwoch 
+
+IP US64405 Buchtrans Bankkonto Übergabe Änderung
+	x- nach einige Verbesserungen nach Antwort von Alex 
+		- (Sammelkonto übergeben Implementierung)
+	x- PR und US waren gestern abgeschlossen
+	
+IP TK64602 Kontoinhaber nur ignorieren, wenn SAP aktiv ist
+	- Task und Pull R. waren gestern abgeschlossen
+
+IP US64604 Zusicherung unterbinden, wenn der SAP Genehmigungsstatus Offen ist
+	- ich machte eine Implementation entsprechend dem Vorschlag von Tom
+	- ich machte push, wir können CR machen
+
+IP US64603 Änderung beim Verhalten im Durchlauf mit einer Geschäftspartner Änderung
+	x- begann mit Arbeit
+		- Frage für Alex in F2
+	x- das werde ich heute machen
+
+30 05 Dienstag
+
+IP SDK-Format
+	- ich machte Verbesserungen nach CR mit Tom und Michael
+	- Build Bug mit Test hat sich wieder gezeigt
+		- temporär ist SDK-Format in noe.IP.Tests.csproj wieder zu alten Format zurückgesetzt
+		- Build funktioniert jetzt, wir warten auf Bernhard für mögliche Vorschläge
+
+IP US64405 Buchtrans Bankkonto Übergabe Änderung
+	- auch einige Verbesserungen nach CR
+		- einige Fragen für Alex
+	
+IP TK64602 Kontoinhaber nur ignorieren, wenn SAP aktiv ist
+	- Kontoinhaber ist wieder geprüft wenn SapAktiv auf false gesetzt
+	- gepusht, PR, wir können CR machen
+	
+29 05 Montag
+
+IP SDK-Format
+	- es gab zwei CI Build Fehler
+		- erst war in Test Projekt - einige Unit Teste waren fehlgeschlagen
+		- zweite war pathToPublish Fehler 
+			- pathToPublish war schon korrigiert in MH, 
+			ich verwendete gleicher Fix wie 
+			und beide Fehler waren korrigiert mit selben Fix
+	- ich habe noch einige Aenderungen gemacht (AssemblyInformation.cs Dateien gelöscht)
+	- bereit für CR
+
+IP US64405 Buchtrans Bankkonto Übergabe Änderung
+	- habe ich US gemacht, gepusht, PR erstellt, wir können CR machen
+
+26 05 Freitag
+
+IP SDK-Format
+	- überprüfte CI Build und sah Fehler wegen Datenbank ConnectionString ("DBConnection")
+		- TODO: behebe
+		- TODO: git stash pop [Aenderung - AssemblyInfromation.cs entfernt]
+
+25 05 Donnerstag
+
+- gestern habe ich nur bei Mittag gearbeitet
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- mit Bernhardt habe ich CR gemacht, PR abgeschlossen, US als Resolved gesetzt
+
+WZ US64397 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- CR gemacht, PR abgeschlossen, US als Resolved gesetzt
+
+IP SDK-Format
+	- machte push und neuer PR
+	( https://tfs01.noel.gv.at/DefaultCollection/IP/_git/IP/pullrequest/8399 )
+	- weitere Änderungen in Directory.Build.props Datei
+		- mit diesen US werde  fortsetzen und dann werde ich auf neue IP USs arbeiten
+				
+24 05 Mittwoch
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	x- Verbesserungen gemacht: 
+		x- Bpk Eigenschaft ist jetzt korrekt übermittelt zu BuchTransService
+		x- PartnerId Eigenschaft umbenannt durch Bpk
+	x- wir können CR machen 
+		- alle Anmerkungen in PR sind jetzt gelöst
+
+WZ US64397 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	x- auch einige Verbesserungen gemacht: 
+		x- Bpk zu BuchTransService übergeben funktioniert (mithilfe von Axels Lösung)
+	x- PartnerId umbenannt
+	x- wir können auch CR machen
+
+IP SDK-Format
+	- konvertierte alle Projekten ausgenommen:
+		- noe.IP.Forms
+		- noe.WT.Lakis.Logic (nicht in "IP\IP" Ordner)
+	- unterschiedliche Fehler waren behoben
+	- Optimierungen ähnlich wie in bisherigen Projekten verwendet
+	- Directory.Build.props Datei habe ich zugefügt
+		- und habe csproj Dateien angepasst und das mache ich heute weiter
+
+- anstatt "IP SDK-Format" kann ich auf neue IP USs arbeiten, wer hat Vorrang?
+		
+23 05 Dienstag
+
+x WZ US64397 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	x- hier haben wir Situation - wo in BuchTranService sollen wir "PartnerID" übergeben
+		x- es gibt Implementierungsvorschlag mit 2 Arrays (in IP Pull Request) aber wir müssen noch einige Sachen hier vielleicht anpassen und überprüfen
+		x- diese gleiche Situation besteht auch in IP 
+		( IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID) )
+
+WZ US64365 CPD - Geschäftspartner ID bei neuem Antrag prüfen und entfernen
+	- wir machten CR und PR abgeschlossen
+	- US in Status Resolved versetzt
+
+WZ US64401 Verhalten bei einer Zession mit SAP
+	- PR in Status "Verworfen" versetzt
+	- US in Status "Removed" versetzt
+	
+WZ US64525 Verhalten bei einer Konto Änderung oder Neuanlage
+	- ich habe getestet Implementierungsvorschlag
+	- machte push und PR und mit Bernhard CR gemacht
+		- wir bemerkten das es gibt kein SapGenehmigungStatus Eigenschaft in WZ
+	- später habe ich ein Meldung eingebaut - also, Meldung das Im Haushalt ein Anweisungsstopp gesetzt ist
+		- wir können CR machen
+		
+- heute werde ich IP in SDK-Format konvertieren
+
+*********************************************************************************
+		
+22 05 Montag
+
+WZ US64365 CPD - Geschäftspartner ID bei neuem Antrag prüfen und entfernen
+	- wir machten CR und entschieden Wert von CPD-ID in den .config temporär auf "ToDo" zu setzen
+	- sollen wir PR abschließen?
+
+EH US64395 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- am CR sagten wir derzeit noch kein BPK vorhanden ist
+	- PR ist pausiert
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- nach CR eine Verbesserung gepusht (SelectedBpk durch TransparenzDbInfo?.Bpk Eigenschaft ersetzt)
+		- CR machen
+	- gebliebener Problem in IP und ebenso in EH ist - wo in BuchTranService übergeben wir "PartnerID"
+		- Implementierungsvorschlag von Alex ist in IP aber brauch noch Anpassungen 
+
+WZ US64397 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- wie schon gesagt, gibt es Frage wo sollen wir "PartnerID" übergeben
+		- Implementierungsvorschlag von Alex ist in IP aber brauch noch Anpassungen 
+	
+WZ US64401 Verhalten bei einer Zession mit SAP
+	- US war verworfen, oder mit einem neuen ersetzt
+
+WZ US64525 Verhalten bei einer Konto Änderung oder Neuanlage
+	- habe ein Implementierungsvorschlag, muss noch testen
+
+*********************************************************************************
+
+19 05 Freitag
+
+WZ US64365 CPD - Geschäftspartner ID bei neuem Antrag prüfen und entfernen
+	- wir machten CR
+		- gibt es Frage über initiale Wert der CPD-ID
+
+EH US64395 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- wir machten CR
+		- Frage über BPK vielleicht für Tom
+		- Frage wo übergeben wir PartnerId zu dem BuchTransService
+	- kleinere Verbesserung gepusht (entfernte "using System")
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- wir machten CR
+		- Frage über BPK vielleicht für Tom
+		- Frage wo übergeben wir PartnerId zu dem BuchTransService
+	- kleinere Verbesserung gepusht (entfernte "using System")
+
+WZ US64397 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- wir machten CR
+		- Frage wo übergeben wir PartnerId zu dem BuchTransService
+
+WZ US64401 Verhalten bei einer Zession mit SAP
+	x- machte mögliche Implementierung des Anweisungsstopps wenn man Zession aktiviert
+		x- ich hatte einige Problemen mit "Autofac...Circular component dependency detected"
+			- versuchte ich der IBuchungService.AnweisungsstoppFuerHaushaltSetzen Methodenaufruf in 
+			HaushaltService.UpdateKontoDaten Methode zu implementieren aber konnte nicht wegen Autofac Ausnahme
+			- dann implementierte ich eine Ebene oben in "call stack"
+	- ich versuchte auch SapGenehmigungStatus Wechsel zu einbauen aber SapGenehmigungStatus besteht nicht in WZ sondern nur in IP, MH, EH
+	- ich machte push, PR, wir können CR machen und es gibt ein paar Fragen
+	
+18 05 Donnerstag
+
+EH US64395 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- kein BPK Eigenschaft gefunden in Anwendung
+	- machte Implementierung, machte push und PR, wir brauchen CR
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- in die IP Anwendung ist BPK Eigenschaft als Guid vorhanden
+	- machte Implementierung, machte push und PR, wir brauchen CR
+
+WZ US64397 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- in WZ Anwendung besteht BPK als Dateityp String, deswegen habe ich in alle 3 Anwendungen EH/IP/WZ PartnerID
+	als String definiert
+	- machte Implementierung, machte push und PR, wir brauchen CR
+
+17 05 Mittwoch
+	
+WZ US64365 CPD - Geschäftspartner ID bei neuem Antrag prüfen und entfernen
+	- Code Review gemacht, wir können wieder anschauen bzw. CR machen
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- Begann mit Arbeit
+
+16 05 Dienstag
+
+EH SDK-Format TK
+	x- noch einige Verbesserungen nach CR gepusht als Bugfix für fehlgeschlagener Job
+	x- PR abgeschlossen, und branch zu main gemergt
+
+WZ US64365 CPD - Geschäftspartner ID bei neuem Antrag prüfen und entfernen
+	- erstellte einige TKs
+	- implementierte TK mit config Wert für "CPD ID", pushte, machte PR, wir können CR machen
+	- machte auch ein Implementierungsvorschlag für Prüfung/Warnung das Wohnungsnutzer hat CPD-ID als SapGeschaeftspartnerId
+		- gepusht, wir können CR machen
+	- ich habe Frage: 
+		1 - wie erkennen wir Anträgen welche offene Zahlungen haben?
+		2 - wie setzen wir CPD-ID in Datenbank Tabelle Wohnungsnutzer Spalte SapGeschaeftspartnerId Wert
+		auf CPD-ID - werden wir ein SQL Query UPDATE machen?
+
+IP US64396 Bei Buchtrans die BPK ebenfalls übermitteln (Feld Partner ID)
+	- habe ich 
+	Ž um zu arbeiten - als ich verstehe hier muss ich neue Eigenschaft hinzufügen zu den Daten die wir in BuchTrans Service senden
+		- TODO: TKs erstellen
+
+15 05 Montag
+
+IP BUG63961 Bug in QA
+	x- ich implementierte gleiche Änderungen in ci.sql, wie in qa.sql
+		- ci.sql und qa.sql sollen jetzt gleiche dbo.Geschaeftsfall INSERTs und dbo.Dokumentvorlage.Inhalt UPDATEs beinhalten
+	x- PR und Bug haben wir waren abgeschlossen
+
+MH SDK-Format TK
+	x- Peter fand Lösung für Build Fehler
+		- ich startete MH und MHWO Builds und beide waren erfolgreich
+	x- PR war abgeschlossen
+
+EH SDK-Format TK
+	x- ich pushte eine Variation von Peters Bugfix und dann startete EH Build, Build war erfolgreich
+	x- es gab einige Verbesserungen nach CR
+	x- wir können wieder CR machen
+
+WZ US64365 CPD - Geschäftspartner ID bei neuem Antrag prüfen und entfernen
+	x- ich begann und das mache ich heute
+	- ich möchte überprüfen einige Details über Implementierung, vielleicht können wir nach DSM
+		- Fragen:
+			1 - wo ist mein "Eingangspunkt" ist:
+				- Antrag suchen und öffnen
+				- Button "Gehe zu Haushalt" drücken
+				- Tab (Reiter) "Anträge" drucken
+				- Button "Antrag protokollieren" drücken
+				- Prüfung machen ob der Antragsteller "CPD ID" hat, und wenn ja, dann setzen wir "SAP Geschäftspartner ID" zurück (wenn Wert besteht in Tabelle Wohnungsnutzer, Spalte SapGeschaefstpartnerId)
+			2 - wo in Code kann man prüfen ob ein "CPD ID" für Wohnungsnutzer vorhanden ist ("...CPD ID kann in der config abgelegt werden...")
+
+12 05 Freitag
+
+IP BUG63961 Bug in QA
+	x- in qa.sql Seed implementierte ich UPDATEs die setzen Wert für Tabelle [Dokumentvorlage] Spalte [Inhalt] für 2019 DOkkumentvorlage
+	x- ich ersetzte GUIDs mit anderer Wert entsprechende dem Empfehlung von Alex
+	x- wir können anschauen und ausprobieren/testen am QA
+		- NOCH NICHT BEHOBEN
+
+MH SDK-Format TK
+	x- ich implementierte PR Anmerkungen von Peter und Bernhard
+
+MH SDK-Format TK
+	x- MH "Job" Projekt ist fehlgeschlagen am CI Build, (und ebenso EH Projekt noe.EH.Job) das fand Bernhard am Freitag
+	x- ich erforschte und versuchte etwas aber CI Build fehlt noch immer 
+		- deswegen machte ich "revert von diesen commit
+		- NOCH NICHT BEHOBEN
+
+EH SDK-Format TK
+	x- EH "Job" Projekt ist fehlgeschlagen am CI Build (gleicher Fehler Meldung wie MH)
+	x- ich erforschte und versuchte:
+		1 - ich ersetzte SDK-Format mit alten-Format, dann funktioniert CI Build
+		2 - ich ersetzte unterschiedliche Teile SDK-Formats mit Teilen aus alten-Format,  CI Build ist dann noch immer fehlgeschlagen (ich versuchte nur "Compile" XML Elementen zu erstezen, dan habe ich auch erste "PropertyGroup" ersetzt, alles ohne Erfolg)
+		3 - ich habe MSBuild Variable System.Debug hinzugefügt und auf true gesetzt, damit ich bekomme ich mehrere debug-Infos, aber noch immer nichts was leitet zu Lösung
+		4 - in noe.EH.Job konvertierte ich alte Format zu SDK-Format - ohne manuelle Änderungen, nur automatische Tool Änderungen
+	- NOCH NICHT BEHOBEN
+
+11 05 Donnerstag
+	- freier Tag genommen wegen Arzttermin Barbaras
+
+10 05 Mittwoch
+
+EH SDK-Format TK
+	x- Verbesserungen nach CR, CI Build funktioniert, vielleicht koennen wir PR abschließen
+	- CI Build Fehler
+		- muss ich erforschen
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+IP BUG64181 Absturz - 500 - Speichern und Berechnen
+	x- für beide IP Bugs gibt es gleicher PR, weil Bugfix ist gleich für beide Bugs
+	x- PR gemergt und Bug in Resolved Status gesetzt
+
+MH SDK-Format TK
+	x- gleiche Änderungen wie in EH habe ich implementiert 
+		- SAK entfernt
+	- CI Build funktioniert, wir koennen vielleicht PR abschließen
+
+IP BUG63961 Bug in QA
+- ich versuchte zu rekonstruieren warum die Fehlern passierten
+- 2 Dokument Vorlage waren erwähnt: Sitzungsreifeschreiben, EndzusicherungDokument 
+- Sitzungsreifeschreiben Fehler stack:
+	AutomatischSitzungsreifeSchreibenErzeugen
+		CreateDokument
+			_createSitzungsReifeSchreiben
+				_createDokumentMethod
+					GetDokumentAsByteArray 
+						Dokument (getter) -> ArgumentNullException
+							- möglicher Problem in 
+								GetVorlage
+									GetVorlageFromDataBase - gibt zurück kein Eintrag 
+									oder NULL in Inhalt Spalte für IP_NET_DOKUMENTVORLAGE_SITZUNGSREIFE_2019?
+
+- ich habe kein Zutritt/Berechtigungen zu QA Server/Datenbank, kann ich irgendwie Datenbank Tabellen anschauen?
+- zB. [dbo].[Dokumentvorlage]
+
+09 05 Dienstag
+
+EH SDK-Format TK
+	- CR mit F2 Team gemacht, einige Änderungen waren vorgeschlagen
+		- Verbesserungen implementiert und gepusht
+
+IP BUG64181 Absturz - 500 - Speichern und Berechnen
+	- Bugfix gepuscht, PR gemacht, wir können CR machen
+
+IP BUG64182 Fehler - Wechsel auf Antrag mit EAW
+	- Bugfix gepuscht, PR gemacht, wir können CR machen
+
+08 05 Montag
+
+IP BUG63961 Bug in QA
+	- ich habe geprüft mithilfe "Fehler Stacks" ob die zusätzliche Änderungen benötigt sind
+	- wir haben getestet Bugfix
+
+EH SDK-Format TK
+	x- weitere Build Fehler behoben, alle Fehlern sind jetzt korrigiert, Solution kompiliert
+		- zB. es gab eine Fehler mit IBM DB2 nuget package - das ist jetzt korrigiert
+		C:\work\.nuget-packages\ibm.data.db.provider\11.1.4040.4\build\net451\x64\IBM.Data.DB2.dll
+		- Konvertierung Tool hat einige Projekt Elemente fehlerhaft gelöscht 
+			- GeneratePathProperty und HintPath
+	x- ich muss noch testen 
+	x- 2 Projekten: Forms und Forms.External kann man nicht automatisch konvertieren
+	x- ich machte PR, vielleicht können wir CR machen
+	- es gibt einige Fragen:
+		1 - frage was mit zipleecher - Tool oder VS generierte automatisch .csproj, .bat und einige andere Dateien
+		2 - was mit nicht automatisch konvertierten Projekten: Forms und Forms.External
+
+- es gibt 2 neue IP Bugs, auf das werde ich vorrangig arbeiten
+
+05 05 Freitag
+
+IP BUG63961 Bug in QA
+	- machte ich einige Änderungen, PR, push - aber es gibt noch einige Fragen
+
+Funktionalität "Geschäftsfall aus der Session entfernen"
+	- ich den PR abgeschlossen
+		- das bedeutet das diese Funktionalität seit Freitag in main branch ist
+
+EH SDK-Format TK
+	- konvertierte Solution, einige Fehlern habe ich behoben, noch viele gibt escd ..
+
+04 05 Donnerstag
+
+MH SDK-Format TK
+	- Directory.Build.props Dateien von Projekten entfernt
+	x- ich erforschte zwei Build Fehlern und versuchte mögliche Behebungen zu finden, wir sagten dass wir diese Situationen später erledigen werden
+
+		1 - Fehler "downgrade" mit noe.Core nuget package - dieser Fehler können wir auch in main branch anschauen
+			- Ich kann 2 Wege finden um das zu lösen:
+			1.1 - anscheinend ist es möglich "Consolidate" zu machen um dieser Fehler zu beheben, bzw. in allen Projekten Version von noe.Core auf neuste Version setzen (von 4.4.4. auf 5.0.2-rc003) - das behebt den Konflikt - **aber** wir bekommen dann Problemen:
+				1.1.1 dann kann der Code in noe.MH.Jobs nicht mehr die "Log" Klasse nutzen, anscheinend bringt Version 5.0.2-rc003 "breaking change" wo Log klasse existiert nicht mehr in noe.Core "assembly",
+				hier muss man Code der nutzt "Log" verarbeiten
+				1.1.2 "PruefeOb" Klasse und "PruefeOb.Vorhanden" Methode erwarten in 5.0.2-rc003 andere Parametern, wieder muss man Code verarbeiten
+			1.2 - es ist möglich in einem Projekt 2 unterschiedliche Versionen von noe.Core zu nutzen, das werde ich jetzt erforschen - aber ich bin nicht sicher das solche Lösung akzeptabel ist
+
+		2 - package Microsoft.Bcl.AsyncInterfaces - dieser Fehler ist nicht gemeldet in main branch aber Situation mit package scheint gleich zu sein
+			- Fehler passiert weil package CsvHelper 27.1.1 fördert Microsoft.Bcl.AsyncInterfaces 5.0.0 und wir haben neuere Version - 6.0.0 in Projekten, als Lösung können wir CsvHelper Version 30.0.1 installieren weil diese Version akzeptiert Microsoft.Bcl.AsyncInterfaces 6.0.0 - das scheint als sichere Lösung, bzw. ohne Nebenwirkungen 
+
+	x- ich konvertierte die Projekten mit Option "modernization" ausprobiert und ich habe mehrere kleinere Optimierungen verwendet
+		1 - Version.cs entfernt in einigen Projekten (schon manuell gemacht)
+		2 - eine neue Änderung ist Entfernen von <ProjectGuid> - das habe ich gemacht weil es sicher ist
+		3 - Projekt noe.MH.Domain.Repository.Interfaces konvertieren
+		4 - <Product>noe.MH.ExcelDokumentProvider.Aspose</Product> umstellen
+		5 - <Copyright>Copyright © Amt der NÖ Landesregierung 2016</Copyright> und ähnliche loeschen
+		6 - <Folder Include="Properties\" /> entfernen von noe.MH.Fakes/Data/External, noe.MH.Lakis und andere Plätze wo man braucht das nicht
+		7 - <PreBuildEvent>powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -Command "Import-Module -Name NoelConfigTransform; Update-Config -folder '$(ProjectDir)'; Update-Config -folder '$(ProjectDir)' -configName 'log4net.template' -newConfigName 'log4net'"</PreBuildEvent>
+			- befindet sich mehrmals in .csproj von Projekt noe.MH.JObs, ist das nötig? 
+			Vielleicht nötig für MSBuild?
+			- HABE ICH ENTFERNT WEIL IN MAIN GIBT ES NUR EINMAL
+		8 - es gibt leere <PreBuildEvent /> in ein paar Projekten - soll ich das entfernen oder ist das gebraucht von MSBuild oder so was?
+			- HABE ICH ENTFERNT WEIL IN MAIN GIBT ES KEINE
+
+	x- eine von zwei Build Fehlern stoppt Build obwohl lokal in VS kann man Anwendung starten und nutzen
+		- wir müssen eine Lösung für diese zwei Fehlern verwenden damit das Build gelangt
+
+IP BUG63961 Bug in QA
+	- begann mit Arbeit
+
+03 05 Mittwoch
+
+MH SDK-Format TK
+	x- ich habe Directory.Build.props eingebaut
+		- Directory.Build.props auf Solution Ebene - fuer Company, Description usw.
+		- Directory.Build.props auf Projekt Ebene - fuer Produkt Name und Version
+	x- ich musste viele Build Fehler beheben 
+		- .csproj manuell anpassen
+		- musste Version.cs loeschen 
+		- AssemblyInfo.cs mit nur ComVisible Attribut habe ich geloescht 
+	x- ich hatte einige Fragen und ich bekam die Antworten von Bernhard, das werde ich nächst implementieren
+ 
+Peter W. PR 
+	- anschauen
+
+02 05 Dienstag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	x- ich machte "revert" für "Geburtsdatum Entfernung" commits
+	x- US Status ist jetzt auf "Resolved" gesetzt, PR ist abgeschlossen
+
+MH TK63997 Geburtsdatum von Förderungswerber entfernen, Domain + DB
+	- neuer PR machte ich für "Geburtsdatum Entfernung" und neue branch erstellt
+	( https://tfs01.noel.gv.at/DefaultCollection/MH/_git/MH/pullrequest/7997 )
+	( feature/TK63997-Geburtsdatum_von_Foerderungswerber_entfernen_Domain_DB )
+		- mache merge main -> ft branch
+	x- einige Verbesserungen gepusht
+	x- TK Status ist jetzt auf "Closed" gesetzt, PR ist abgeschlossen
+
+MH SDK-Format TK
+	x- ich konvertierte Projekten, wo das möglich war
+		- ohne Optimierungen (ich bekam einigen Empfehlungen oder Warnungen - Details in todo Datei)
+	x- einige Projekten konnte nicht konvertieren, ich muss noch testen
+
+- bekam Fehler:
+Es ist ein Fehler aufgetreten
+Der Anmeldevorgang wurde aufgrund eines Fehlers beendet:
+Fehlercode : config.06
+Support-Ticket: UKFL-LMSR-OJ3Z
+Fehlermeldung: NO configuration for application: {https://portal.noe.gv.at/_ptlsrv/eid-auth}
+
+28 04 Freitag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- wir machten CR und ich habe die Verbesserungen gemacht und gepusht
+	- ich habe neuste TK63997 "Geburtsdatum von Förderungswerber entfernen, Domain + DB" implementiert,
+	TK ist jetzt abgeschlossen
+		- gepusht, wir brauchen CR
+		- ich musste Seed Dateien - ci.sql und qa.sql - ändern (Spalte entfernen)
+
+x-1 Pull Request abschließen
+2 MHWS machen - SDK Style
+3 Peter PR anschauen
+
+27 04 Donnerstag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- wir haben CR gemacht und Verbesserungen gepusht
+
+IP US63681 Geschäftsfall aus der Session entfernen
+	- Verbesserungen für CR Kommentare gepusht
+
+EH BUG63759 Ausländische Bankverbindung - BIC wird nicht gespeichert
+	- bugfix gepusht, PR gemacht, wir koennen CR machen
+
+IP BUG63975 Irreführende Meldung korrigieren
+	- bugfix gepusht, PR gemacht, wir koennen CR machen
+
+26 04 Dienstag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- wir machten ein CR, ich habe den Änderungen gepusht
+
+EH BUG63759 Ausländische Bankverbindung - BIC wird nicht gespeichert
+	- konnte nicht wiederholen
+
+25 04 Dienstag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- namespace umbenannt
+	x- SAP Buttons Implementierung getestet - und dann Änderungen gemacht, Buttons funktionieren wenn lokal getestet
+		x- SAP Werte speichern und "zurücksetzen" Button - das habe ich korrigiert
+	x- SAP-Geschäftspartner-ID Label und editierbare Status-Dropdown implementiert
+	x- unterschiedliche Korrekturen
+	x- am CI Umgebung getestet, funktioniert, Implementierung sollte jetzt fast fertig sein
+
+- Fragen für Termin nach DSM:
+1 MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+1.1 "Bankkonto" und "Statistiknummer"
+	- BuchTransDto Klasse - woher kommen diese Eigenschaften das (Konto scheint mit Geschäftsfall verknüpft zu sein	und wir haben mit Förderungswerber SAP Eigenschaften verknüpft)?
+1.2
+	- TODO Kommentare in PR lösen/implementieren
+
+2 IP - PR für Funktionalität "Geschäftsfall aus der Session entfernen"
+	- meistens von Tom entwickelt aber enthält auch meine Änderungen
+	- PR URL ist: https://tfs01.noel.gv.at/DefaultCollection/_git/IP/pullrequest/7761?_a=overview 
+	- branch ist: feature/no-geschaeftsfall-in-session
+	- noch kein CR ist vorhanden
+
+*********************************************************************************
+
+24 04 Montag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	x- noch bisschen SAP Methoden angepasst (BuchTransDto) und einige refactorings gemacht
+	x- möchte Implementierung zu testen aber es gab Probleme mit Datenbank (Freitag Deploy fehlgeschlagen)
+		- das war wegen Fehler in Build nach push von Freitag
+	x- ich hatte auch Problem mit Migration add-migration in VS das war behoben mit Hilfe von F2 team
+		x- das haben wir behoben
+		- ein zusätzlicher Problem mit noe.MHWO.Web Projekt und EF Referenz gab es auch
+			- ich habe EF 6.4.4 zu noe.HMWO.Web hinzugefügt um dieser Fehler zu beheben
+	- ich habe erstellt ein manueller Skript mit EF Migration
+	x- dann konnte ich testen und dann machte ich Korrekturen
+	x- ich habe BuchTrans.aspx Seite erstellt und Implementierung gepusht
+
+*********************************************************************************
+
+21 04 Freitag
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- ich habe BuchTrans Service hinzugefügt
+	- ich habe Eigenschaften für BuchTrans in .config Datei zugefügt
+	- BuchTransService Methoden für MH habe ich eingebaut und mit SAP Methoden verknüpft
+		- noch nicht fertig
+
+*********************************************************************************
+
+20 04 Donnerstag
+
+- gestern hatte ich wegen eine Erledigung nur biss etwa 9 in morgen gearbeitet und etwas am spät Nachmittag
+
+IP BUG63740 Ändern Konfigurationswerte für SAP
+	- CR gemacht, Korrekturen gepusht
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- SQL Changescript, habe ich BuchTransService hinzugefügt und sie verbindet mit SAP Methoden
+
+19 04 Mittwoch
+
+IP BUG63740 Ändern Konfigurationswerte für SAP
+	x- machte ein Bugfix, commit und push
+	x- bereit für CR
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	x- weitere Implementierung: backend, SAP Methoden
+	- heute Datenbank Änderungen
+
+*********************************************************************************
+
+18 04 Dienstag
+
+WZ BUG63704 WZ - Produktion, SAP aktiv?
+	- versuchte Situation zu wiederholen
+	- Bernhard bemerkte das 2 Attributen fehlen und das war eigentlich die Lösung
+		- machte commit und push
+		- NACH CR PR VEROFFENTLICHEN!
+
+- fand ähnlicher Bug in EH und machte Bugfix für gleiche Situation
+EH BUG63731 SapAktiv Attribut in .config Datei korrigieren
+	- neue Bug, Bugfix gepusht, wir brauchen CR
+		- NACH CR PR VEROFFENTLICHEN!
+
+- in anderen Anwendungen (IP) gibt es nicht solchen Bug
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	- weitere Implementierung UI, .config Datei, interface
+
+*********************************************************************************
+
+17 04 Montag
+
+EH BUG63295 "SAP Feature Flag auch bei Sitzungsreife Setzen beachten"
+	x- Bug war geschlossen, Bugfix war schon früher gepusht
+
+IP ??? QA SEED Bereinigen
+	- wir haben mit Tom in ci.sql INSERT zu Tabelle DokumentVorlage angeschaut und F2 Team Datei angeschaut: file:///C:\work\repos\IP\IP\Temp\Lakis\Fake\IP_NET_DOKUMENTVORLAGE_GESCHAEFTSZAHLVERSTAENDIGUNG.doc
+
+IP US63681 Geschäftsfall aus der Session entfernen
+	x- ich machte PR, diese PR beinhaltet am meistens Änderungen von Tom, ich glaube Bernhard wird CR machen
+	x- ich habe lokal getestet entsprechend den Schritten aus Dokument neuesten Markdown Datei "IP-Geschaeftsfall-Lebenslauf-bis-Anweisungsliste.md"
+		- beide - kurzer Weg mit Testdaten und langer Weg ohne Testdaten
+		x- fand ein Bug und die ganze Situation mit Alex/Tom/Bernhard besprochen 
+			- das ist Bug "SAP Verknüpfung ohne Endabrechnungsdaten nicht möglich"
+	x- ich fand keine Problemen mit SAP Buttons
+
+IP BUG63693 SAP Verknüpfung ohne Endabrechnungsdaten nicht möglich
+	x- Bug ist jetzt korrigiert und Lösung gepusht
+		- ich habe Anwendung nach Bugfix wieder getestet, auch die SAP Buttons - es sollte gut sein
+	x- wir brauchen CR
+
+MH US62866 SAP Geschäftspartner ID Ermittlung einbauen
+	x- begann SAP Buttons zu implementieren
+
+*********************************************************************************
+
+IP feature/no-geschaeftsfall-in-session
+	x- ich habe ein merge von main zu feature branch gemacht
+	x- und SAP Buttons getestet, fand einige Exceptions in Zusammenhang mit SessionManager.Current.Geschaeftsfall
+		x- ich machte einige Korrekturen:
+			- wenn BuchTrans.aspx geladen
+			- wenn "Mit Buchhaltung verknüpfen" gedrückt 
+	- Implementierungsvorschlag ist gepusht aber es gibt keine PR weil kein US oder TK war mir zugewiesen
+
+EH BUG63295 "SAP Feature Flag auch bei Sitzungsreife Setzen beachten"
+	- ich versuchte Situation zu wiederholen aber konnte nicht, ohne Erfolg
+	- Button "Sitzungsreife setzen" bleibt versteckt (also "hidden") am CI Umgebung
+	- in Quell Kod anscheinend gibt es schön eine Feature Flag "SapAktiv" Prüfung vor "SAP Geschäftspartner ID" Prüfung
+		- ich brauche ein Beispiel
+	- können wir zusammen ausprobieren
+
+*********************************************************************************
+
+13 04 Donnerstag
+
+- gestern musste ich Arbeit um etwa 11 oder 12 beenden,  ich arbeitete etwas kurzer
+
+feature/SAP_Genehmigungsstatus_Anweisungsstopp_-_Seed_Anleitung
+	x- nach CR habe ich einige Verbesserungen implementiert (md Datei Änderungen)
+	x- gepusht, wir können CR machen
+
+EH US63518 SAP - Button Geschäftspartner ändern wie in IP
+[ BRANCH feature/US63518-SAP_Button_Geschaeftspartner_aendern_wie_in_IP AUS feature/63226-SAP_Anweisungsstopp_wird_benoetigt ERSTELLT ]
+	x- nach CR einige Verbesserungen 
+		- einige Methoden umbenannt
+		- SAP URLs öffnen in neue Tab für SAP Buttons
+	x- gepusht, wir können CR machen
+
+*********************************************************************************
+
+12 04 Mittwoch
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	- ich habe, in PR, definierte Verbesserungen implementiert (Schritten Reihenfolge, einige Schritten entfernt, mit/ohne Testdaten Weg beschrieben)
+	- ich habe Anleitung mit und ohne Testdaten ausprobiert (weil es gibt kurz und lang Weg bzw. mit und ohne Testdaten) 
+		- beide funktionieren wie erwartet in lokal durchgeführten Test
+	- wir können CR machen
+
+EH US63518 SAP - Button Geschäftspartner ändern wie in IP
+[ BRANCH feature/US63518-SAP_Button_Geschaeftspartner_aendern_wie_in_IP AUS feature/63226-SAP_Anweisungsstopp_wird_benoetigt ERSTELLT ]
+	- ich habe Implementierungsvorschlag gemacht und PR erstellt
+	- machte ich merge von main zu feature branch, es gab einige Konflikten
+	- wir können CR machen
+		- FRAGE: sollen wir Buttons "In Buchhaltung öffnen" und "SAP Geschäftspartner ändern" in neuen Fenster öffnen?
+
+*********************************************************************************
+
+11 04 Dienstag
+
+EH US63518 SAP - Button Geschäftspartner ändern wie in IP
+[ feature/US63518-SAP_Button_Geschaeftspartner_aendern_wie_in_IP AUS feature/63226-SAP_Anweisungsstopp_wird_benoetigt ERSTELLT ]
+	x- erstellte TK 36559 "Button "SAP Geschäftspartner ändern" - UI und "backend""
+	x- begann mit Implementierung
+
+EH US63226 SAP - Anweisungsstopp wird benötigt - AELTERE US
+[ feature/63226-SAP_Anweisungsstopp_wird_benoetigt ]
+	- machte eine kleinere Änderung in Formatierung - gepusht
+	x- mit Tom und Bernhard CR gemacht, nach CR gab es noch einige Verbesserungen
+		- Verbesserungen implementiert, merge
+	x- US auf Resolved gesetzt
+
+WZ US62579 Geschäftspartner ID wieder entfernen - AELTERE US
+	- nach CR keine Verbesserungen vorschlagen
+	x- das ist eine ältere US, habe ich US zu Alex zugewiesen und auf Resolved gesetzt
+		- ich muss prüfen und korrigieren Build Probleme (KOMMENTAR PROBLEM)
+
+IP US63290 Zusätzlicher Button "SAP Geschäftspartner ändern"
+[ feature/63290-Zusaetzlicher_Button_SAP_Geschaeftspartner_aendern - AUS feature/63286-SAP_Genehmigungsstatus_beim_Antrag_editierbar_machen ERSTELLT ]  
+	- nach CR und Genehmigungen von Reviewers, machte ich merge
+	- US auf Resolved gesetzt
+
+IP BUG 63202 Sitzungsreife setzen eines Geschäftsfalls - Fehlermeldung "x Konto: korrekt befüllen" Validierung ändern
+[ BRANCH feature/BUG63202-Sitzungsreife_setzen_eines_Geschaeftsfalls - AUS main ERSTELLT ]
+	- nach CR, neue Verbesserungen gepusht
+	- warten auf Genehmigung von Reviewers um merge zu machen
+		- Fehler beim Build, muss ich erforschen (KOMMENTAR PROBLEM)
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- ich machte Build und schliss die US
+	- habe ich US zu Alex zugewiesen und auf Resolved gesetzt
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	- machten wir CR, gibt es Verbesserungen (Schritten Reihenfolge)
+
+*********************************************************************************
+07 04 Freitag
+
+IP US63290 Zusätzlicher Button "SAP Geschäftspartner ändern"
+[ feature/63290-Zusaetzlicher_Button_SAP_Geschaeftspartner_aendern - AUS feature/63286-SAP_Genehmigungsstatus_beim_Antrag_editierbar_machen ERSTELLT ]  
+	- machte eine Verbesserung
+		- TK "Zusätzlicher Button SAP-Geschäftspartner ändern" - Button ist jetzt immer "Enabled" und Button jetzt öffnet neues Fenster und setzt SapGenehmigungStatus auf GenehmigunOeffnen, auch Anweisungsstopp ist gesetzt nur wenn kein überschneidenden Anweisungsstopp vorhanden ist (keine Fehler Meldung)
+		- push gemacht, lokal getestet, TK als Closed bezeichnet, wir können CR machen
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+[ SAP_Genehmigungsstatus_Anweisungsstopp_-_Seed_Anleitung - AUS main ERSTELLT ]
+	- TK "Seed + Anleitung" - ich setzte TK als Closed
+	- wir brauchen feedback von Tom über 2 Fragen aus PR Kommentaren und dann vielleicht vollständige CR
+
+IP BUG63202 Sitzungsreife setzen eines Geschäftsfalls - Fehlermeldung "x Konto: korrekt befüllen" Validierung ändern
+[ feature/BUG63202-Sitzungsreife_setzen_eines_Geschaeftsfalls - aus main erstellt]
+	- machte ein Implementierungsvorschlag
+	- PR gemacht, wir können CR machen
+
+- ich analysierte meine ältere noch immer aktive USs:
+
+SITUATION 1
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- es handelt sich um "SAP-Geschäftspartner-ID zurücksetzen" Funktionalität
+	- meine letzte Notiz über dieser US ist:
+		- nach einige Information von Alex war PR gepublisht, wir brauchen noch CR und dann sollte US fertig sein
+	- werden wir CR machen und dann "merge" machen wenn alles gut?
+
+SITUATION 2
+EH US63226 SAP - Anweisungsstopp wird benötigt
+	- es handelt sich um Anweisungsstopp und SapGenehmigungStatus Funktionalität
+	- SapGenehmigungStatus implementiert
+	- User Story ist jetzt, glaube ich fertig, PR ist gepublisht, wir brauchen CR
+		- soll SAP GesscaheftsparterID auch SapGenehmigungStatus auf NULL setzen?
+	- werden wir CR machen und dann "merge" machen wenn alles gut?
+	- ich glaube diese branch brauchen wir um:
+		A - "SAP Geschäftspartner ändern" zu implementieren
+		B - editierbare SapGenehmigungStatus Eigenschaft (momentan in diese branch ist das nur ein "readonly" TextBox)
+
+06 04
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+[ SAP_Genehmigungsstatus_Anweisungsstopp_-_Seed_Anleitung ]
+TK - Seed + Anleitung
+	- in SQL Skripten habe ich die Werte von Sap* Eigenschaften (SapGeschaeftsfallId, SapGenehmigungStatus, SapSessionId) bisschen angepasst
+	- ich habe von Michael, vorgeschlagene Anleitung Verbesserungen implementiert
+		- es gibt nur noch 2 Fragen für Tom - die Fragen warten bis Tom von Urlaub zurück kommt
+	- ich habe Anleitung Aenderungen am lDatenbank lokal getestet und jetzt gibt es keine Fehler mehr während Verfahren,
+	das bedeutet ich konnte ANleitung kurzer und einfacher machen
+	- ich kopierte Inhalt von ci.sql zu qa.sql
+	- ich glaube wir können CR (alles implementiert, ausgenommen 2 Frage für Tom)
+
+IP US63290 Zusätzlicher Button "SAP Geschäftspartner ändern"
+	- mit Bernhard und Michael machten wir CR gestern
+	- ich habe Verbesserung gepusht, für ein Kommentar brauchen wir Antwort von Alex
+	- wir können ein CR machen
+
+05 04
+
+IP US63290 Zusätzlicher Button "SAP Geschäftspartner ändern"
+[ feature/63290-Zusaetzlicher_Button_SAP_Geschaeftspartner_aendern] 
+	- neue TK angelegt - "Button "SAP Geschäftspartner ändern" - UI und "backend""
+		- Implementierung von UI und "backend"
+		- machte PR, wir können CR machen
+		- Frage:
+			1 - sollte "SAP Geschäftspartner zurücksetzen" auch die bestehende mögliche Anweisungstopp entfernen
+			(ich glaube das es moeglich ist das Person in Geschaeftsfall besitzt SapGeschaeftspartnerId aber das auch Anweisungstopp existiert weil der Benutzer drückte "SAP Geschäftspartner ändern")
+
+04 04
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+[ SAP_Genehmigungsstatus_Anweisungsstopp_-_Seed_Anleitung ]
+TK - Seed + Anleitung
+	x- machte einige Änderungen im Anleitung
+	x- ich habe generierte Skript bearbeitet
+		- Tabellen INSERTs angepasst in gleiche Reihenfolge wie zuvor den Änderungen damit wir einfach vergleichen kann
+	x- mit diese Skript habe ich lokale und CI Datenbank erstellt
+	und Anweisungsstopp und SapGenehmigungStatus lokal getestet (in ihre branch)
+	- wir können CR fuer Anleitung und ci.sql machen und wenn alles OK kann ich Inhalt von ci.sql zu qa.sql kopieren
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+TK - SAP Genehmigungsstatus beim Antrag editierbar machen
+TK - Wenn SAP Genehmigungsstatus auf "Genehmigt" gesetzt wird, SAP Anweisungsstopp entfernen
+	- Verbesserungen für CR von waren Freitag implementiert, gepusht, wir können CR machen
+
+03 04
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	x- machten wir CR, es gibt einige Verbesserungen
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	x- Seed+Antrag Task
+	- machte re-deploy von "Release-562" main branch (Init, Datenbank-IP, Web-IP)
+	x- ich habe Schritten von Bernhards Beschreibungen von Task durchgeführt am CI Umgebung
+		- Alle Schritte funktionierten, nur am eltztzen bekam ich ein unerwarteten Fehler
+		- FRAGE - Schritt 19 (letzte):
+		Fehler(#GEN0105) The referred object of type noe.IP.Domain.Anweisungsakt (identity field value(s): (81866f17-512a-4c76-9d39-317112f686b6)) was not found
+		- ich generierte ein Skript obwohl letzte Schritt 19 fehlgeschlagen war
+		- machte neue branch aus main: feature/SAP_Genehmigungsstatus_Anweisungsstopp_-_Seed_Anleitung
+		- machte draft PR
+
+	- ich muss noch:
+		- .md Datei fertig machen, und in eigene branch und eigene PR push machen
+		- Seed von CI Datenbank machen in ci.sql exportieren
+			- fur das kann ich branch feature/63286-SAP_Genehmigungsstatus_beim_Antrag_editierbar_machen
+		- ich muss auch ci.sql kopieren zu qa.sql (weil sie dürfen gleich sein)
+
+31 03
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+[ feature/63286-SAP_Genehmigungsstatus_beim_Antrag_editierbar_machen ]
+	- TK63286 SAP Genehmigungsstatus beim Antrag editierbar machen
+		- implementierte dropdown für SapGenehmigungStatus
+	- TK63287 Wenn SAP Genehmigungsstatus auf "Genehmigt" gesetzt wird, SAP Anweisungsstopp entfernen
+		- implementierte das
+		- habe am CI getestet
+			- ich bekam Fehler "Das Ausführungstimeout ist abgelaufen" ("timeout")
+			wenn ich versuchte AnweisungsStoppZeitraumDeaktivieren zu aufrufen in eine andere Methode - ich Fand ein Fix glaube ich
+		- wir können CR machen
+
+30 03
+
+EH US63226 SAP - Anweisungsstopp wird benötigt
+[ feature/63226-SAP_Anweisungsstopp_wird_benoetigt ]
+	- SapGenehmigungStatus implementiert
+	- User Story ist jetzt, glaube ich fertig, PR ist gepublisht, wir brauchen CR
+		- soll SAP GesscaheftsparterID auch SapGenehmigungStatus auf NULL setzen?
+
+IP US63286 SAP Genehmigungsstatus beim Antrag editierbar machen
+[ feature/63286-SAP_Genehmigungsstatus_beim_Antrag_editierbar_machen ]
+	- begann mit editierbaren SapGenehmigungStatus Implementierung
+		- ich wollte ein dropdown machen anstatt readonly TextBox
+
+NICHT DSM!
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+[ feature/62937-AZ_Anweisungsstopp-Seed ]
+	- wir haben noch nicht "Seed" Situation in CI Datenbank
+		- letzet version von Anderungen ist in (gleiche Dateien)
+			- C:\work\ig\nolr\ci.sql
+			- C:\work\ig\nolr\C:\work\ig\nolr
+29 03
+
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+[ feature/62937-AZ_Anweisungsstopp-Seed ]
+	- es zeigte sich das die Daten in IP Datenbank zurückgesetzt waren und das Skript beinhaltet keine Aenderungen wir für Seed
+	- wenn die Test Situation in IP Datenbank wieder erstellt ist, kann ich "Seed" SQL Skript und Anleitung machen
+
+EH US63226 SAP - Anweisungsstopp wird benötigt
+[ feature/63226-SAP_Anweisungsstopp_wird_benoetigt ]
+	- machte ein TK, eine Implementierungsvorschlag
+	- PR gemacht
+
+28 03
+
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+	- mit TOM und Bernhard - eine CR
+	- Test am CI, Anweisungsstopp mit Anuitaeten-Zuschuss Test
+		- unterschiedliche Verbesserungen
+	- Pull R. ist jetzt "merged"
+	- dann versuchte ich "Seed" fuer IP zu erweitern
+		- neue branch aus main - feature/62937-Bei_ausstaendigen_SAP_Freigaben_muss_ein_Anweisungsstopp_gesetzt_werden
+		- Seed Skript war aktualisiert fuer Test von Anweisungsstopp mit Anuitaeten-Zuschuss
+			- machte gleiche Reihenfolge von Datenbank Tabellen wie in derzeitige ci.sql Datei
+			- ich habe lokale IP Datenbank erstellt - ich muss noch testen
+
+BUG63150 SAMW in einem eigenen Tab öffnen
+	- CR, gepusht, merged
+
+27 03
+
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+[ feature/62937-Bei_ausständigen_SAP_Freigaben_muss_ein_Anweisungsstopp_gesetzt_werden ]
+	x- CR gemacht, Verbesserungen gepusht
+
+BUG63150 SAMW in einem eigenen Tab öffnen
+[ feature/63150-SAMW_in_einem_eigenen_Tab_oeffnen ]
+	x- Fix, PR gemacht - bereit für CR
+
+- nach Anweisungsstopp brauche ich neue US
+
+24 03
+
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+	- machte ein Implementierungs-Vorschlag aber wir brauchen CR
+		- commit, push draft Pull R.
+
+23 03
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- machten wir CR, keine neue Verbesserungen
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	- einige Verbesserungen nach CR
+	- nach Feedback von Alex werde ich US schließen
+
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+	- begann zu implementieren, machte Änderungen entsprechend der Besprechung von gestern
+	- das mache ich heute auch
+
+22 03
+
+- ich habe gestern bisschen kürzer gearbeitet weil eine unerwartete Erledigung erschien
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- schon vorgestern waren die Verbesserungen implementiert
+	- wir brauchen neue CR
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	- ich habe Verbesserungen nach CR fertig gemacht
+	- wir brauchen neue CR
+
+IP US62937 Bei ausständigen SAP Freigaben muss ein Anweisungsstopp gesetzt werden
+	x- begann zu implementieren, aber es gibt einige Fragen
+	- machte neue branch
+		feature/62937-Bei_ausständigen_SAP_Freigaben_muss_ein_Anweisungsstopp_gesetzt_werden
+	 aus branch
+	 	feature/62962-SAP_Genehmigungsstatus_bei_Antrag_wird_benoetigt
+	weil die 2 TKs sind verbunden
+
+21 03
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- ich habe getestet am CI Umgebung
+	- wir machten ein Code Review
+	- nach Review gab es einige Anpassungen/Verbesserungen
+	- ich machte diesen Verbesserungen, machte commit und push
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	- ich machte SapGenehmigungStatus Property fertig
+	- wir machten Code Review, nach Review gab es einige Anpassungen/Verbesserungen und ich arbeitete gestern
+	auf diesen Verbesserungen - das werde ich bald fertig machen und dann gibt es neue US IP "Anweissungstop"
+
+20 03
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	x- implementierte Antrag-Status Pruefung fuer "enabled" Property von Knopf "SAP Geschaeftspartner ID"
+		- auch "Locked && !ReadOnlyPermission" Pruefungen
+	x- Status-Wechsel SAP-Pruefung ist auch implementiert
+	x- Berechtigungen sind implementiert
+	x- alle TKs geschlossen
+	x- ich machte Publish fuer PR
+	x- ich muss noch testen und dann koennen wir CR fuer ganze US machen
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	x- ich implementierte TK "Neue Felder" - SQL change script, Neue Felder in Klassen, UI
+
+17 03
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- CR und einige Verbesserungen nach CR von Tom, es gab noch einige Fragen aber Julia hat das heute geantwortet
+
+IP BUG62784 - Hauptantragsteller Flag kann nicht gespeichert werden
+	- CR und Approved
+
+IP US62962 SAP Genehmigungsstatus bei Antrag wird benötigt
+	- versuchte TK zu erstellen, aber es gibt einige Fragen, ich bin noch nicht fähig ganze Prozess zu ausprobieren
+
+16 03
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- suchte nach Ort in Code wo kann ich in Status-Wechsel-Pruefung machen, ob "SAP Verknuepfung ID" vorhanden ist
+	- versuchte Implementierung zu machen aber ich war einfach nicht sicher ob das korrekt ist
+		- muss ich mit Tom oder Bernhard reden ueber technische Details
+
+BUG62784 - Hauptantragsteller Flag kann nicht gespeichert werden
+	- ich habe Fix gemacht, gepusht, Pull Request gemacht
+	- wir können CR machen
+
+15 03
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- weiter implementierte SAP-Verknuepfung Buttons
+		- machte BuchTrans.aspx Seite wie in anderen Anwendungen
+		- implementierte Speicherung von Sap Eigenschaften fuer Person Objekt - mussen wir anschauen, funktionerit aber vielleciht gibt es bessere Weise das zu machen
+		- implementierte Buttons, machte commit/push
+		- TODO:
+			1 - ich muss noch Status mit "SAP Verbindung zuruecksetzen" Button verbinden (wie Sitzungsreife in EH)
+			2 - muss ich eine Pruefung machen dass SAP Geschaeftspartnber ID vorhanden ist wahrend Status Wechsel
+			und dann muss ich Buttons Implementierung testen
+			3 - muss Berechtigungen fuer SAP Buttons erstellen
+			4 - testen
+		- FRAGEN:
+			1 - in welchem Status ist "SAP Verknuepfung zuruecksetzen" moeglich? enum AntragStatus, Regierungssitzung?
+			2 - wo muss ich ueberpruefen das SAP Geschaeftspartner ID vorhanden ist? In AufstockungMgr.MehrereAntraege
+			3 - wie funktionieren Berechtigungen in KB?
+
+KB TK62930 Status mit Button verbinden und Status Wechsel Prüfung
+	- began zu suchen nach Beispiele und Kod zu analisieren
+
+14 03
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- nach einige Information von Alex war PR gepublisht, wir brauchen noch jetzt nur CR und dann ist US fertig
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- BuchTrans Implementierung fertig gemacht
+	- ich implementierte "Mit Buchhaltung verknuepfen" und andere Knopfe und jetzt verbinde ich diese Buttons mit BuchTrans Aufrufen
+
+13 03
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- Verbesserungen - fertig, wir mussen noch Tom fragen ob implementierte Pruefung korrekt ist
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	x- ich habe einige TKs fertig gemacht (SQL changescript, Felder in UI, )
+	- machte SQL fur neue Spalten, erstellte neue Eigenschaften in Klassen,
+	- implementierte Felder in UI
+	- jetzt mache ich BuchTrans service reference - bbisschen schwierig weil demo Lizenz fur JetBrains Rider abgelaufen ist, aber ich kann es mmanuell machen
+	x- heute werde ich mit TKs forsetzen, BuchTrans imlpoemntieren und so weiter
+
+10 03
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+	x- ich testete lokal und CI nach Verebserung von Tom, alle Verbesserungen sind jetzt implementiert
+	x- ich implementierte eineige null Pruefungen in UTs weil einige haben fehlgeschlagen
+	- ich versuchte Erledigungsart zu implementieren, aber wir muessen das anschauen
+	(es wurde gesagt Abstockung und Zusicherung aber es gibt nicht Absotckung, nur "Ablehnung")
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- TKs erstellt
+	- ich began mit Implementierung von einige UI/config/BuchTrans TK
+
+09 03
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- habe ich letzte PR Verbesserungen nach Vorschlag von Tom implementiert
+		- bei mir funktionert nicht, ich probierte am CI - NeuerWohnungsnutzerTest_Success fehlgeschlagen
+
+EH TK62632 Bei Sitzungsreife muss SAP-ID vorhanden sein
+	- ALTE BRANCH feature/62309-Beim_Pruefen_auf_Sitzungsreife_auch_UseSap_beachten
+	- neue PR, Task fertig
+
+IP TK62631 Beim Prüfen auf Sitzungsreife auch UseSap beachten
+	- neue branch feature/62309-Beim_Pruefen_auf_Sitzungsreife_auch_UseSap_beachten
+	- neue PR, Task fertig
+
+IP TK62609 Anzeigen der SAP GP ID bei der Person
+	- Implementierung in feature/57331-Anzeigen_der_SAP_GP_ID_bei_der_Person
+	- PR gemacht, wir koennen CR machen
+
+KB US62763 SAP Geschäftspartner verknüpfen
+	- habe ich neue branch erstellt, und mit Implementierung begonnen
+
+08 03
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- PR Verbesserungen nach Code Review von Bernhard
+		- es gibt noch ein der nich geloest ist
+
+- VM blockierte, neu-gestartet - dann konnte ich nicht verbinden sofort
+
+IP
+- machte merge von main in feature branch feature/62309-Entfernen_der_SAP_Geschäftspartner_Verknüpfung
+- gepusht (leer commit weil ich habe Aenderungne aus lokal version angenomen)
+- PR erstellt
+
+EH
+- machte merge von main in feature branch feature/62310-SAP_Geschaeftspartner_Verknuepfung_entfernen
+- auch gepusht (leer commit weil ich habe Aenderungne aus lokal version angenomen)
+- PR erstellt
+
+07 03
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- Verbesserungen von Freitag waren fertig gemacht
+	- ich implementierte Verbesserung mit Geschaeftspartner-ID Pruefung wenn man Erledigung speichert
+
+EH TK62608 Erfolgsmeldung anzeigen
+IP TK62607 Erfolgsmeldung anzeigen
+- Bestaetigung dass SAP GP erfolgreich zurueckgesetzt war
+	- implementiert in IP, EH - gepusht
+
+06 03
+WZ US62579 Geschäftspartner ID wieder entfernen
+	- überprüfte ich dass Implementierung
+	funktioniert am CI Umgebung
+	- es gab einige Verbesserungen
+	nach Code Review
+
+03 03
+
+WZ US62579 Geschäftspartner ID wieder entfernen
+"Entfernen der SAP Geschäftspartner Verknüpfung"
+	- machte TK, Implementierung, PR draft
+	- muss am CI testen
+
+EH TK62532 Verknüpfung entfernen in Datenbank und UI
+	- macht eine Verbesserung nach PR
+
+IP US62039 "Entfernen der SAP Geschäftspartner Verknüpfung"
+	- macht eine Verbesserung nach PR
+
+02 03
+
+EH US62310 "SAP Geschäftspartner Verknüpfung entfernen"
+TK62532 Verknüpfung entfernen in Datenbank und UI
+	- fertig gemacht, PR Published
+	- muss noch am CI testen
+
+IP US62039 "Entfernen der SAP Geschäftspartner Verknüpfung"
+	- machte TK, Implementierung, PR Published
+	- in EH und IP implementierte Verbesserung wo man bekommt ein Warnung und Frage ob SAP Geschaeftspartner soll wirklich gelöscht werden
+	- muss noch am CI testen
+
+01 03
+
+EH US62310 "SAP Geschäftspartner Verknüpfung entfernen"
+TK62532 Verknüpfung entfernen in Datenbank und UI
+	x- machte ich TK, Implementierung, PR
+	x- wir b
+	- testete auf CI und es gibt Situation das Änderungen ist gespeichert in Datenbank aber nach
+	wenn man Knopf drueckt und Seite ist neu geladen "SAP Geschaeftspartner ID" Wert ist noch immer in UI
+	sichtbar, vielleicht eine cache Situation
+
+28 02
+
+EH TK62061 Geschäftspartner verknüpfen
+	x- SAP User S. - Weitere Verbesserungen nach Besprechung mit Bernhard und Tom
+
+EH TK62314 Klärung: Soll Flag Hauptantragsteller automatisch gesetzt werden wenn nur 1 Antragsteller vorhanden?
+	x- Weiter Verbesserungen am "Hauptantragsteller Flag" Task
+	- gepusht
+
+EH US62310 SAP Geschäftspartner Verknüpfung entfernen
+	x- ich began mit Implementierung von Button "SAP-Geschäftspartner zurücksetzen"
+
+27 02
+
+EH TK62061 Geschäftspartner verknüpfen
+EH TK62062 SapActive
+EH TK62318 Check .config ob BuchTransServer auf richtige System geht
+	x- gestern machten wir US Code Review
+	x- es gab einige Verbesserungen nach US Code Review
+	x- es gibt ein Paar Fragen, das koennen wir
+	nach Daily besprechen
+	- Problem mit Fehler Meldungen aus BuchTrans.ascx wegen Response.End
+		- Fehler Meldung sieht nicht optimal, vielleicht koennen wir anschauen
+			2 - ich implementierte DispErrorMsg Aufruf (Control musste erben nicht von UserControl sondern EHBaseCtrl)
+			- funktioniert nicht wegen ValidationKey ist nicht vorhanden - es gibt keine Validaiton Kontrolle in ASCX
+24 02
+
+- hab ich kürzer gearbeitet weil ich hatte ein Arzttermin in Zagreb
+
+EH TK62061 Geschäftspartner verknüpfen
+	- ich machte ein Test gemacht mit Tom und Bernhard testeten wir Implementierung
+	- ich habe dann einige Verbesserungen gemacht:
+		- Default.aspx umgesetzt zu root
+		- Path replace benutzt
+		- Default.aspx umgesetzt mit Default.ascx
+		- ASCX Test
+	- ich habe auch "In Buchhaltung öffnen" Knopf implementiert
+	- machte ich commit
+
+EH TK62062 SapActive
+	- ich implementierte den Task, machte Test und commit
+
+23 02
+
+EH TK62061 Geschäftspartner verknüpfen
+	x- testete mit Tom und machte einige Verbesserungen nach Code Review
+	x- und dann habe ich fortgesetzt zu entwickeln
+		- muss ich BuchTrans.ascx oder aspx implementieren, ich konnte vielleicht bisschen besprechen mit Bernhard oder Tom
+
+22 02
+
+EH US61996 TK62060 Neue Felder für SAP
+	- ich habe es fertig gemacht, mit Hilfe von Tom
+
+EH TK62059 Buchtrans Service Referenz
+	x- ich habe Web Service Referenz hinzugefügt unter Projekt noe.EH.Forms.External - vielleicht können anschauen ob dieser Projekt der beste Platz ist
+		- es gibt schon andere web service namens HypoService in noe.EH.Business.Logic
+
+EH TK62061 Geschäftspartner verknüpfen
+	x- implementierte "Mit Buchhaltung verknüpfen" Knopf in UI
+		- brauchen wir "In Buchhaltung öffnen?" Knopf
+	x- ich implementierte auch MitBuchungVerknuepfen Methode und andere Komponenten wie BuchTransService
+		x- ich muss das alles testen und dann können wir die Implementierung überprüfen
+
+21 02
+
+IP PR7003 - PR geschlossen und US gesetzt in Status "Resolved"
+
+EH PR7030 (Hauptantragsteller TK62058)
+	x- ich machte Verbesserungen nach Pull Request Kommentaren
+	- (Variable Namen, Texts, Dokumentation)
+
+EH US61996 TK62060 Neue Felder für SAP
+	- entwickelte ich weiter, machte Änderungen in Klassen und Schnittstellen
+	- nächst - finde HauptAntr. und SAP Eigenschaften in CurrentGF
+	x- das konnte heute fertig sein
+
+20 02
+
+Pipeline Problem - mit .tt Dateien
+IP
+	x- nach Hinweisen von Tom machte ich ein Fix, es ist gepusht
+		- HauptAntragsteller umbenannt wie in Klasse
+	x- danach gab es noch ein Fehler - und mit Hilfe von Tom war er korrigiert, ein Fix ist gepusht
+	x- Pipeline funktioniert jetzt und lokal gibt es kein Fehler mehr
+	- PR schlissen und US setzen
+
+EH US61996 TK62058 Hauptantragsteller
+	- Verbesserungen entsprechend den Pull R. Kommentaren
+	- wir können es noch einmal anschauen ob alle PR Kommentare sind jetzt implementiert und wenn ja
+	schließe ich den Task
+	x- nach Verbesserungen koennen wir jetzt noch einmal anschauen und wenn alles OK Task schliessen
+
+EH US61996 TK62064 Config
+	- ich machte push, TK bezeichnet als Closed
+
+EH US61996 TK62060 Neue Felder für SAP
+	- begann den Task zu implementieren
+	- machte SQL Skripts
+
+17 02
+
+EH - US61996 TK62058 Hauptantragsteller
+	x- commit und push, machte PR als Draft
+
+PIPE.PROBLEM
+WZ TK61880 SapGeschaeftspartnerId und SapSessionId Felder - PR6864 - WZ
+	- Pipeline Problem weil "web service" ctor nimmt nicht haushaltService Parameter
+	x- Pipeline Problem wegen in Zusammenhang mit Dep. Inj., Fix gepusht
+	( feature/61874-anlage-der-geschaeftspartner-ueber-samw gepusht )
+	- wir sagten am Freitag wir schließen dieses PR am Montag
+
+IP BUG 61986 Person als Haupt Antragsteller markieren - Korrektur - PR6980
+	x- bezeichnete ich PR als Approved und als Completed, also geschlossen
+	( https://tfs01.noel.gv.at/DefaultCollection/IP/_git/IP/pullrequest/6980 )
+
+PIPE.PROBLEM
+EH US61996 - Verknüpfung des Antragstellers mit SAP über SAMW - PR7030 -
+	- Pipeline Fehler: "'FakePerson' does not implement inherited abstract member" 'Person.HauptAntragsteller.get'
+	x- ich löste diesen Problem, Fix gepusht und CI Pipeline funktioniert jetzt
+
+PIPE.PROBLEM
+IP US61987 SAP Verknüpfung Zeitpunkt - Implementierung - PR7003
+	- DTO.include.tt - CI Pipeline Build Fehler
+	x- ich versuche noch immer Fehler zu lösen, vielleicht konnte ich das besprechen mit Tom und Bernhard
+
+16 02
+
+x- gestern machte ich code reviews und Verbessreungen mit Bernhard und Tom am WZ und IP:
+WZ: TK61880 WZ SapGeschaeftspartnerId und SapSessionId Felder
+IP: US61987 SAP Verknüpfung Zeitpunkt - Implementierung
+IP: BUG 61986 Person als Haupt Antragsteller markieren - Korrektur
+
+US61996 TK62058 Hauptantragsteller - EH
+	- ich holte Daten in lokale Datenbank mit Hilfe von Tom
+	x- Implementierung ist fast fertig, ich muss noch commit und push
+
+15 02
+
+US61987 SAP Verknüpfung Zeitpunkt - IP
+	- Tom gab mir Hinweise wie kann ich implementieren
+	- Problemen mit "build" - musste Projekt Referenz wieder hinzufügen
+	- machte neue branch feature/61987-SAP_Verknüpfung_Zeitpunkt aus main
+	x- ich machte Implementierung entsprechend den Hinweisen von Tom und Bernhard
+	x- ich hatte einige Probleme mit testieren weil ich bekam Business Logic Exception aber Tom hat mir geholfen um Daten zu konfigurieren
+	x- als Die Problemen waren geloest konnte ich commit und push machen und Pull R. ist auch jetzt gemacht
+
+BUG 61986 Person als Haupt Antragsteller markieren - Korrektur - IP (PR)
+	- analysierte Anmerkungen von Tom (mehr als 1 Hauptantragsteller - zB. ein in IP anderer in EH)
+		- Alex wird entscheiden
+	x- sollte fertig sein aber wir müssen noch überprüfen, es gibt noch eine offene Frage
+
+US61996 TK62058 Hauptanstragsteller - EH
+	x- machte unterschiedliche Änderungen um Ist HauptAntragsteller Feld zu implementieren am UI und anderen Schichten
+	x- ich bekomme keine Daten und bin nicht sicher ob HauptAntragsteller sollte als neue
+	Spalte in DB Tabelle Personen implementiert worden
+
+14 02
+
+US61874 TK61882 "Geschäftspartner verknüpfen" - WZ
+	- machte einige Verbesserungen:
+		- entfernte unnoetige Kommentare
+		- suchte wohin kommt ID in URL damit ich er als Konstante erstellen kann
+			- es ist nicht in unseren Quell Kod, es kommt aus: Klasse noe.Core.Web2.NavigationPage, Methode GetUrl
+		- Ich habe Registrierung von "web service" und Schnittellen von code-behind zu web.config verschoben:
+				- RegistrationServiceHelper.RegisterServiceByAutowireSingletonScope(containerBuilder, NoeWZAssemblies.External, typeof(IBuchTransService));
+	- mit hilfe von Bernhard sind jetzt alle PR Anmerkungen sind implementiert für diesen TK
+	x- machte einige Verbesserungen
+	x- mit hilfe von Bernhard sind jetzt alle PR Anmerkungen sind implementiert für diesen TK
+	x-machte Publish fur Pull R
+
+BUG 61986 Person als Haupt Antragsteller markieren - IP
+	- es ist implementiert und getestet, pushed, Pull R. gemacht
+	- loeschen PR: https://tfs01.noel.gv.at/DefaultCollection/IP/_git/IP/pullrequest/6979
+		- loeschen feature/61986-person_als_haupt_antragsteller_markieren
+	- behalten PR: https://tfs01.noel.gv.at/DefaultCollection/IP/_git/IP/pullrequest/6980
+		- behalten feature/61986-person_als_haupt_antragsteller_markieren_MAIN
+	x- ich habe es implementiert und getestet, es ist gepusht, Pull Req. gemacht
+
+13 02
+
+US61874 TK61882 "Geschäftspartner verknüpfen" - WZ
+	x- gestern war QA Test mit Bernhard, einige Verbesserungen haben wir gemacht
+	x- bestehen noch ein paar offenen Fragen die wir mit Tom besprechen werden heute
+	- ich machte ein kleiner Verbesserung, commit und push
+	- einige kleinere Verbesserungen gemacht auf markdown Datei (grammatische Fehlern korrigiert)
+	x- mehrere kleinere Verbesserungen
+
+TK61980 "Buchtrans Feature Flag Label ausblenden" - IP
+	x- ich implementierte Task entsprechend den Anforderungen, machte commit und push
+
+us61996 tk62058 Hauptanstragsteller - EH
+	x- Bernhard machte TKs für US und ich begann mit Implementierung
+	- ich fügte hinzu sql, md, v8rj.config Dateien
+
+10 02
+
+US61874 TK61882 "Geschäftspartner verknüpfen" - WZ
+	- ich sah mit Bernhard der Implementierung an
+	- Bernhard hat einige Sachen verbessert und hat Anmerkungen für andere geschrieben
+	- mit Bernhard und Tom haben wir einige Sachen bestimmt
+	- und ich setzte fort mit übrigen Verbesserungen und testete sie
+	- alles ist jetzt in remote repo gepusht und wir können es lokal testen
+	x- ich habe fortgesetzt mit Verbesserungen und testete sie
+	x- alles ist jetzt in remote repo gepusht und wir können es lokal testen
+
+- in IP machte ich gleiche Änderung wie in WZ - für Label mit GeschaeftspartnerId ("SAP-Geschäftspartner-ID") Sichtbarkeit ist jetzt gesteuert von einem config Parameter namens UseSap
+- frage für Bernhard: soll ich gleiche config Parameter für Knöpfe "Mit Buchhaltung verknüpfen" und "Im Buchhaltung öffnen" implementieren?
+
+x- in IP machte ich einige Änderung wie in WZ - für Label mit GeschaeftspartnerId
+
+09 02
+
+US61874 61882 "Geschäftspartner verknüpfen" - WZ
+	- Verbesserung nach Anmerkung von Bernhard (Length Eigenschaft)
+	- .config Dateien vervollständigt mit fehlende Eigenschaften
+	- testete Verknüpfung in WZ mit CI URL
+	- implementierte Task Punkte Nu. 3 bis 5
+	- traf mit B. und T. um Sachen in Status TODO zu lösen
+		- noch einige Änderungen solltet durchgeführt werden zB. neuer Knopf hinzufügen
+		- das machte ich mit Hilfe von Tom und Bernhard
+		- TK sollte jetzt implemntiert sein, ich machte commit und push
+		-vielleicht Bernhard und Tom Draft PR ansehen koennen weil alle Tasks sind jetzt fertig
+
+		x- ich arbeitete auf "Geschäftspartner verknüpfen"
+		Task und mit Unterstufung von Bernhard und Tom ist jetzt fertig, ich machte push und commit
+
+US61874 61883 Feature-Flag "UseSap"
+	- implementiert
+	- ich habe getest, machte commit und push
+	x- ich arbeitete auf Feature-Flag "UseSap", es ist implementiert , ich machte commit und push
+	PR fuer ganze US
+
+08 02
+
+US61874 61882 Geschäftspartner verknüpfen - WZ
+	- begann zu implementieren Klassen und Schnittellen in WZ mit IP als Vorlage mit gewissen Anpassungen
+	- Tom hat mir geschaut und gab mir Hinweise wie ich dass machen kann
+	- später während Tag war Implementierung fast fertig gemacht mit Hilfe von Tom und Bernhard
+		- wir müssen nur noch über ein Paar Eigenschaften reden die konnten nicht auf richtige Wert gesetzt werden
+		- bisschen unerwartete Sache ist: in Wohnungsnutzer.xml "Length" Eigenschaft am SAP Elementen verhindert build process und verursacht Fehlern wahrend "build"
+			- ich musste NoeWZAssemblies.External hinzufuegen zu "Dependency Injection" Registrierung
+
+07 02
+
+US61874 TK61800 Neue Felder - WZ
+	- ich habe Dokumentation Beschreibungen zugefügt
+	- ich habe Kontrollen auf UI nur lesbar (read-only) gemacht
+	- ich testierte
+	x- ich machte noch einige Tests
+	x- machte Draft Pull Request und Verbesserungen entsprechend den PR Anmerkungen von Bernhard und Tom
+
+US61874 61882 Geschäftspartner verknüpfen - WZ
+	x- analysierte Unterschiede zwischen IP und WZ weil ich versuchte "Buchung Verknüpfung" zu implementieren mit IP als Vorlage
+	x-es gibt ein Paar Fragen, und darüber werde ich mit Bernhard und Tom später reden
+		- einige Klassen und Schnittellen sind auf anderen Platzen
+		- einige so zu sagen Bauelemente die existieren in IP existieren nicht in WZ und ich versuchte
+		wie soll ich Implementierung machen
+			- beste Weg ist vielleicht zu versuchen zu implementieren wie in IP mit den Anpassungen die erforderlich sind für
+			WZ
+			- zB. aehnliche repository Namen: IP-IFoerderungenRepository, WZ-
+
+06 02
+
+- lernte noch ein Paar Dinge über Arbeitszeit eintragen während Mobilen Arbeit
+ weil machte Arbeitszeit Eintrag zu spaet und machte kein Ausloggen in PA 2.0 waehrend Pause und machte PC in "Hibernate" Modus
+ und Zeit Arbeitszeit läuft ganze Zeit wahrend diese Pause
+ - deswegen brauchte ich einige Korrekturen
+
+
+US61874 TK61800 Neue Felder - WZ
+	- mit Hilfe von Bernhard und Tom habe ich lokal Datenbank erstellt für WZ
+	x- ich implementierte ersten TK aus User Story
+	x- muss ich noch einige Dinge prüfen und dann mache ich Pull Req.
+		- ich machte:
+			Neues Feld in der Tabelle Wohnungsnutzer
+			Changescript (SQL)
+		- ich implementierte neue Kontrollen unter "Wohnungsnutzerinformationen" auf UI zu hinzufügen
+			- ich muss es fertig machen
+				- Bestehen die Regeln welche Formate sind zugelassen fur SapGeschaeftspartnerId und SapSessionId Werte? Oder sind das freie Eingabe?
+		- startete ich: Dokumentation zu vorbereiten - aber das ist vielleicht am besten wenn Pull Request passiert alle Kontrolle und Verbesserungen
+03 02
+
+x- klonierte WZ repo lokal auf VM
+x- startete WZ mit Hilfe von Tom
+x- startete WZ und IP um zu vergleichen zwei Anwedungen un
+veielleicht lernen wie kann Verknupfung von Person mit Buhung implementiert worden in WZ
+	- wie sollen diesen US in TKs verteilen: von UI bis zu anderen Schichten, ähnlich wie schone existierende US fur IP?
+	- wie sollen diesen US in TKs verteilen: von UI bis zu anderen Schichten, ähnlich wie schone existierende US fur IP?
+
+- also wir mussen in WZ Button "Verknupfung von Person mit Buchung" implementieren und neueu Feld der dient als Indikator ob Person mit Buhung verknupft ist
+
+02 02
+
+TK61744 HealthCheck & Wartungsseite (KB Anwendung)
+	- noch einige Pull Request Kommentare waren implementiert
+	- nach ich "Wartung" Verzeichnis in "Controls" umgezogen hat
+	- ich fing an zu bekommen Fehler "Der Sitzungszustand steht in diesem Kontext nicht zur Verfügung."
+
+- ich installierte noch einige Software installiert auf VM:
+	- SonarLint in VS
+	- JetBrains Rider IDE, damit ich web services hinzufuegen kann weil Rider generiert prefereierte Syntax
+
+x - gestern habe ich mit Bernhard User Story fuer KB Anwendung fertig gemacht,
+es gab noch ein Paar Verbesserungen auf "HealthCheck & Wartungsseite" Pull Request, aber das ist jetzt erledigt
+
+x - und ich habe auf IP Anwendung teilgenomen auf einem code review
+x - ich konnte vieleicht heute auf etwas neues arbeiten
+
+01 02
+
+TK61744 HealthCheck & Wartungsseite (KB Anwendung)
+	- getestet Aenderungen und machte push
+		- Fehler mit <email> Abteilung in web.config war geklart
+	- ich habe auch Kontrole WartungTdb.ascx geloescht weil es mit SimpleCtrl.ascx (aus noeCore Verzeichnis)
+	umgesetzt werden kann
+	- PR gemacht, PR Kommentare implementiert (also, einiege Ver)
+	x- ich arbeitete auf Task HealthCheck & Wartungsseite (KB Anwendung), und machte es fertig,
+	das war letzte Task fur diese User Story
+	- ich machte Pull Request und danach einige Pull Request Kommentare von Bernhard implementiert
+
+MHRZ Anwendung
+	- ich bemerkte eine unnotwendge Zeile und machte neue branch und PR
+	- machte Aenderung commit/push
+	- PR gemacht, approved, merged
+	x - kleinere Aenderungen auf MHRZ Anwendung (in Beziehung mit BAZ/SAMW User Story),
+	machte ich auch Pull Request und merge
+
+31 01
+
+TK61742 BazService (KB Anwendung)
+	- ich implementierte Raest dieses Task und stellte status als Closed
+
+TK61742 Ping Methode (KB Anwendung)
+	- implementiert wie in MHRZ
+
+TK61744 HealthCheck & Wartungsseite (KB Anwendung)
+	- Fehler 1: es gab Fehler mit Verbindung zu SQL Server - korrigiert mit Bernhard
+	- Fehler 2: ich hatte noch ein Fehler mit QA Zertifikat aber das loeste ich selbst durch instalierung in
+	lokal Windows Certificate Store
+	- Wartungsseite.aspx war angepasst WartungsControl.ascx zu nutzen
+	aber es gab Fehler
+		- Fehler 3: wenn ich fuegte WartungsControl.ascx hinzu, passierte Fehler mit Kontrolle MailTestCtrl.ascx
+			- fand Weg diese Fehler uz vermeiden:
+				- „email“ Abteilung raus aus web.template.config genommen
+				- Kontrolle WartungsKontrolle.ascx (aus "noeCore" Verzeichnis) lud Kontrolle MailTestCtrl.ascx weil sie findet in web.config <email> "Config Section" und dann versucht einige email Eigenschaften wie SmtpServer, From, To usw. zu lesen und werft Exception
+	- HealthCheck.aspx war auch angepasst WartungsControl.ascx zu nutzen
+	- WartungsControl.ascx schaue jetzt beide Teste, TDB und SAMW
+	- KOntrolle TdbWa
+
+30 01
+
+TK61742 BazService (KB Anwendung)
+	- KB - implementierung von BazService gestartet
+		- Klassen implementiert (constructor mit server parameter und certifikat bezeichnung)
+		- muss bekommen generierte service quell code von Thom fur neue web service
+
+PR6709 PR (MHRZ Anwendung)
+	- Bernahrd fand einige Problemen in QA build - ich verbessert das dann durch PR (BAZ/Baz)
+	- ich machte ein PR Verbesserung gemacht entsprechend dem Thoms PR Bemerkung
+	- und PR ist jetzt in "Resolved" status und mit main "branch" war merge gemacht
+
+~~~~~~~~~~~~~
+
+27 01
+
+TK61687 HealthCheck & Wartungsseite ( US Umstellung BAZ -> SAMW Anbindung )
+	- MHRZ - Anderungen entsprechend den PR Bemerkungen
+
+TK61739 portal.json
+	- KB - implementiert, c/pc, closed
+
+TK61740 configuration
+	- KB - implementiert, c/pc, closed
+
+26 01
+
+TK61687 HealthCheck & Wartungsseite
+	- mit Hilfe von Bernhard implementierten wir HealthCheck und Wartunggseite
+	- machten commit und push
+	- machten PR, und ein Quell code review
+			- heute werde ich den Anderungen entsprechend den PR Bemerkungen machen
+25 01
+
+TK61684 portal.json
+	- machte Aenderung, commit & push
+
+TK61685 external baz service
+	- implementation zusammen mit Bernhard (aber ohne erfolg weil die quell code musste generiert sein von jetbrains rider statt VS)
+
+TK61686 ping methode
+	- Ping methode implementiert
+	- uberpruefte mit Bernhard und wenn alles ok dann schliese TK (Closed)
+
+- NO-log - mit Stefan versuchten wir no-log zu nutzen auf VM (zutritt noch immer verveigert)
+
+24 01
+- gestern habe ich git repo gestellt mit Bernhard
+TK61682 - Bernhard erzahlte mir uber Architektur von MHRZ und Verbindung mit SAMW und BAC beziehungsweise SAP
+(einen Tag wird es SAP sein)
+	- arbeitete auf meinem ersten TK, machte commit und push
+
+23 01
+- Menschen kennen lernen
+- HW SW Umgebung stellen
