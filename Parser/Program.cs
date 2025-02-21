@@ -14,7 +14,7 @@ namespace Parser
             StringBuilder sb = new StringBuilder("///// Console Parser in C# 2024 by Barbi //////////\n");
             sb.Append("____________________________________________________ \n");
             sb.Append('\n');
-            string filepath = @"C:\nolr-work-log-2023.txt";
+            string filepath = @"C:\Users\Korisnik\Dropbox\BIT-LAB\nolr\nolr-work-log-2025.txt";
             bool isFound = (File.Exists(filepath));
             if (isFound)
             {
@@ -77,7 +77,7 @@ namespace Parser
                         //Console.WriteLine(datumPLUSus);
                     }
 
-                    naDatum = (rastavljeniredak[0].ToString() + " " + rastavljeniredak[1].ToString() + " " + "2023" + " ");
+                    naDatum = (rastavljeniredak[0].ToString() + " " + rastavljeniredak[1].ToString() + " " + DateTime.Today.Year + " ");
                     listaUS = new List<string>();
                     listaUS.Add(naDatum);
                 }
@@ -88,7 +88,9 @@ namespace Parser
                     || rastavljeniredak[0].Equals("WZ")
                     || rastavljeniredak[0].Equals("IP")
                     || rastavljeniredak[0].Equals("FX3")
-                    || rastavljeniredak[0].Equals("MHRZ")))
+                    || rastavljeniredak[0].Equals("MHRZ")
+                    || rastavljeniredak[0].Equals("MHWS")
+                    ))
                 {
 
                     if (rastavljeniredak[1].StartsWith("US")
@@ -102,7 +104,7 @@ namespace Parser
                         }
                         listaUS.Add(userstory);
                     }
-                }
+                } 
             } while (i < (brojredaka + 1));
             sb.Append("__________________________________________________________________________ \n");
             sb.Append('\n');
@@ -110,7 +112,7 @@ namespace Parser
             sb.Append("__________________________________________________________________________  \n");
             sb.Append('\n');
             Console.WriteLine(sb.ToString());
-            File.WriteAllText(@"C:\Parser202x.txt", sb.ToString());
+            File.WriteAllText(@"C:\Users\Korisnik\Dropbox\BIT-LAB\nolr\result.txt", sb.ToString());
         }
     }
 }
