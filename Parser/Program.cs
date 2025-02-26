@@ -79,10 +79,11 @@ namespace Parser
                         }
                         if (listaUS.Count() >= 2)
                         {
+                            // Check if list is ok, and add a date with userstory
                             datePLUSus = String.Join("", listaUS).ToString();
                             sb.Append(datePLUSus + '\n');
                         }
-
+                        // In splited line is a new date plus check fore year from file name 
                         //  If the year is successfully extracted from the file name
                         int year = 0;
                         if (int.TryParse(yearFromFilename, out year))
@@ -93,7 +94,7 @@ namespace Parser
                         {
                             specificDate = (splitedLine[0] + " " + splitedLine[1] + " " + DateTime.Today.Year + " ");
                         }
-
+                        // Readed new date from splitedline, clear old list, up in code old list is append, add new date to list
                         listaUS.Clear();
                         listaUS.Add(specificDate);
                     }
