@@ -3,6 +3,8 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace Parser
 {
@@ -11,108 +13,123 @@ namespace Parser
 
         static void Main(string[] args)
         {
-            StringBuilder sb = new StringBuilder("///// Console Parser in C# 2024 by Barbi //////////\n");
+            StringBuilder sb = new StringBuilder("///// Console App Parser in C# 2024 by Barbi //////////\n");
             sb.Append("____________________________________________________ \n");
             sb.Append('\n');
-            string filepath = @"C:\Users\Korisnik\Dropbox\BIT-LAB\nolr\nolr-work-log-2025.txt";
-            bool isFound = (File.Exists(filepath));
-            if (isFound)
+            // get file path
+            string filepath = ConfigurationManager.AppSettings["FilePath"] ?? string.Empty;
+            // get year from file path
+            string filename = Path.GetFileName(filepath);
+            string yearFromFilename = Regex.Match(filename, @"\d{4}").Value;
+
+            if (string.IsNullOrEmpty(filepath) || !File.Exists(filepath))
             {
-                sb.Append("   File has been found and is being parsed! \n");
-                sb.Append("____________________________________________________ \n");
-                sb.Append('\n');
+                Console.WriteLine($"Invalid file path specified in the configuration. File Path: {filepath} ");
+                throw new FileNotFoundException($"Invalid file path or file not found: {filepath}");
             }
-            else { throw new FileNotFoundException("File is not fond."); };
-            StreamReader reader = File.OpenText(filepath);
-
-            string redak = null;
-            string userstory = string.Empty;
-            string datumPLUSus = string.Empty;
-            string naDatum = string.Empty;
-            int day = 0;
-            int month = 0;
-            int i = 0;
-            List<string> listaUS = new List<string>();
-
-            var brojredaka = File.ReadAllLines(filepath).Length;
-            do
+            sb.Append("   File has been found and is being parsed! \n");
+            sb.Append($"   File path: {filepath} \n");
+            sb.Append("____________________________________________________ \n");
+            sb.Append('\n');
+            using (StreamReader reader = File.OpenText(filepath))
             {
-                redak = reader.ReadLine();
-                i++;
-                if (redak == null)
-                {
-                    if (listaUS.Count() == 1)
-                    {
-                        datumPLUSus = String.Join("", listaUS).ToString();
-                        sb.Append(datumPLUSus + " " + "-there are no entries on the specified date ?! \n");
-                        //Console.WriteLine(datumPLUSus + " " + "-there are no entries on the specified date ?!");
-                    }
-                    if (listaUS.Count() >= 2)
-                    {
-                        datumPLUSus = String.Join("", listaUS).ToString();
-                        sb.Append(datumPLUSus + '\n');
-                        //Console.WriteLine(datumPLUSus);
-                    }
-                    continue;
-                }
-                if (redak == "" || redak == "\t" || redak.StartsWith("\t"))
-                {
-                    continue;
-                }
-                string[] rastavljeniredak = redak.Split(" ");
 
-                if (rastavljeniredak.Length >= 2 && int.TryParse(rastavljeniredak[0], out day) && int.TryParse(rastavljeniredak[1], out month))
+                string? fileLine = null;
+                string userstory = string.Empty;
+                string datePLUSus = string.Empty;
+                string specificDate = string.Empty;
+                int day = 0;
+                int month = 0;
+                int i = 0;
+                List<string> listaUS = new List<string>();
+
+                var numberOfLines = File.ReadAllLines(filepath).Length;
+                do
                 {
-                    if (listaUS.Count() == 1)
+                    fileLine = reader.ReadLine();
+                    i++;
+                    if (fileLine == null)
                     {
-                        datumPLUSus = String.Join("", listaUS).ToString();
-                        sb.Append(datumPLUSus + " " + "-there are no entries on the specified date ?! \n");
-                        //Console.WriteLine(datumPLUSus + " " + "-there are no entries on the specified date ?!");
-                        listaUS = new List<string>();
-                    }
-                    if (listaUS.Count() >= 2)
-                    {
-                        datumPLUSus = String.Join("", listaUS).ToString();
-                        sb.Append(datumPLUSus + '\n');
-                        //Console.WriteLine(datumPLUSus);
-                    }
-
-                    naDatum = (rastavljeniredak[0].ToString() + " " + rastavljeniredak[1].ToString() + " " + DateTime.Today.Year + " ");
-                    listaUS = new List<string>();
-                    listaUS.Add(naDatum);
-                }
-
-                if (rastavljeniredak.Length >= 2 &&
-                    (rastavljeniredak[0].Equals("EH")
-                    || rastavljeniredak[0].Equals("MH")
-                    || rastavljeniredak[0].Equals("WZ")
-                    || rastavljeniredak[0].Equals("IP")
-                    || rastavljeniredak[0].Equals("FX3")
-                    || rastavljeniredak[0].Equals("MHRZ")
-                    || rastavljeniredak[0].Equals("MHWS")
-                    ))
-                {
-
-                    if (rastavljeniredak[1].StartsWith("US")
-                        || rastavljeniredak[1].StartsWith("BUG")
-                        || rastavljeniredak[1].StartsWith("TK"))
-                    {
-                        userstory = (rastavljeniredak[1] + " ");
-                        if (rastavljeniredak[1].Length <= 3)
+                        if (listaUS.Count() == 1)
                         {
-                            userstory = "|" + rastavljeniredak[1] + "-invalid value from input type|";
+                            datePLUSus = String.Join("", listaUS);
+                            sb.Append(datePLUSus + " " + "-there are no entries on the specified date ?! \n");
                         }
-                        listaUS.Add(userstory);
+                        if (listaUS.Count() >= 2)
+                        {
+                            datePLUSus = String.Join("", listaUS);
+                            sb.Append(datePLUSus + '\n');
+                        }
+                        continue;
                     }
-                } 
-            } while (i < (brojredaka + 1));
+                    if (fileLine == "" || fileLine == "\t" || fileLine.StartsWith("\t"))
+                    {
+                        continue;
+                    }
+                    string[] splitedLine = fileLine.Split(" ");
+
+                    if (splitedLine.Length >= 2 && int.TryParse(splitedLine[0], out day) && int.TryParse(splitedLine[1], out month))
+                    {
+                        if (listaUS.Count() == 1)
+                        {
+                            datePLUSus = String.Join("", listaUS).ToString();
+                            sb.Append(datePLUSus + " " + "-there are no entries on the specified date ?! \n");
+
+                            listaUS = new List<string>();
+                        }
+                        if (listaUS.Count() >= 2)
+                        {
+                            datePLUSus = String.Join("", listaUS).ToString();
+                            sb.Append(datePLUSus + '\n');
+                        }
+
+                        //  If the year is successfully extracted from the file name
+                        int year = 0;
+                        if (int.TryParse(yearFromFilename, out year))
+                        {
+                            specificDate = (splitedLine[0] + " " + splitedLine[1] + " " + year + " ");
+                        }
+                        else
+                        {
+                            specificDate = (splitedLine[0] + " " + splitedLine[1] + " " + DateTime.Today.Year + " ");
+                        }
+
+                        listaUS.Clear();
+                        listaUS.Add(specificDate);
+                    }
+
+                    if (splitedLine.Length >= 2 &&
+                        (splitedLine[0].Equals("EH")
+                        || splitedLine[0].Equals("MH")
+                        || splitedLine[0].Equals("WZ")
+                        || splitedLine[0].Equals("IP")
+                        || splitedLine[0].Equals("FX3")
+                        || splitedLine[0].Equals("MHRZ")
+                        || splitedLine[0].Equals("MHWS")
+                        ))
+                    {
+
+                        if (splitedLine[1].StartsWith("US")
+                            || splitedLine[1].StartsWith("BUG")
+                            || splitedLine[1].StartsWith("TK"))
+                        {
+                            userstory = (splitedLine[1] + " ");
+                            if (splitedLine[1].Length <= 3)
+                            {
+                                userstory = "|" + splitedLine[1] + "-invalid value from input type|";
+                            }
+                            listaUS.Add(userstory);
+                        }
+                    }
+                } while (i < (numberOfLines + 1));
+            };
             sb.Append("__________________________________________________________________________ \n");
             sb.Append('\n');
             sb.Append("   The file has been parsed! \n");
             sb.Append("__________________________________________________________________________  \n");
             sb.Append('\n');
             Console.WriteLine(sb.ToString());
-            File.WriteAllText(@"C:\Users\Korisnik\Dropbox\BIT-LAB\nolr\result.txt", sb.ToString());
+            File.WriteAllText(@"C:\src-barbi-91\Parser\result.txt", sb.ToString());
         }
     }
 }
