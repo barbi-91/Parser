@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace Parser
 {
@@ -130,7 +132,27 @@ namespace Parser
             sb.Append("__________________________________________________________________________  \n");
             sb.Append('\n');
             Console.WriteLine(sb.ToString());
-            File.WriteAllText(@"C:\src-barbi-91\Parser\result.txt", sb.ToString());
+            // This code was used to save data to a text file (txt),
+            // but it's now commented out as we are saving data to a PDF file instead.
+            //File.WriteAllText(@"C:\src-barbi-91\Parser\result.txt", sb.ToString());
+
+            // Here we are calling the method that saves the data to a PDF file
+            SaveDataAsPdf(@"C:\src-barbi-91\Parser\result.pdf", sb);
+
+
+
+        }
+        public static void SaveDataAsPdf(string filePath, StringBuilder sb)
+        {
+            Document document = new Document(PageSize.A4);
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                PdfWriter writer = PdfWriter.GetInstance(document, fs);
+                document.Open();
+                document.Add(new Paragraph(sb.ToString()));
+                document.Close();
+            }
+            SaveDataAsPdf(@"C:\src-barbi-91\Parser\result.pdf", sb);
         }
     }
 }
